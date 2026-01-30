@@ -6,7 +6,7 @@
 #### Tutorial 1: Refresher ####
 ###############################
 
-# Today's tutorial is a refesher of the R skills we learnt in the first semester.
+# Today's tutorial is a refresher of the R skills we learnt in the first semester.
 #     1. Importing data
 #     2. Wrangling data
 #     3. Analysing data
@@ -23,6 +23,11 @@
 # GDP per capita (current US$): NY.GDP.PCAP.CD
 # "tax revenue (% of GDP)": GC.TAX.TOTL.GD.ZS
 
+# Set working directory for current folder
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+getwd()
+
+
 #### Importing the data
 # Your csv file should now be in the desktop folder. Before opening it, we're going to
 # load in our libraries.
@@ -31,7 +36,14 @@ library(tidyverse)
 library(stargazer)
 
 ## loading the data
-data <- 
+data <- read_csv("tutorial01_data.csv")
+
+data <- read_csv("tutorial01_data.csv", 
+                 col_types = cols(
+                   `Ease of doing business rank (1=most business-friendly regulations) [IC.BUS.EASE.XQ]` = col_double(),
+                   `Tax revenue (% of GDP) [GC.TAX.TOTL.GD.ZS]` = col_double(),
+                   `GDP per capita (current US$) [NY.GDP.PCAP.CD]` = col_double()))
+str(data)
 
 #### Wrangling the data
 # We should now have a dataset where our variables are at least of the correct type.
@@ -40,15 +52,25 @@ data <-
   
 # 1. First, let's have a look at our data object. Use the functions we learned from last
 #    term. 
+str(data)
+ls(data)
+head(data)
+summary(data)
 
 # 2. Let's drop the rows and columns we don't need.
 # We only have one year, so the two cols related to year can be dropped; also, we only
 # really need one col for country name, so let's drop country code too.
   
+data <- data %>%
+  select(-(starts_with("Time")), -(`Country Code`))
+
+ls(data)
 # 3. Let's also get rid of the variable code in square brackets
 
 names(data) <- #hint: try using the function sub() with the regexp " \\[.*"
-  
+
+names(data) <- sub(" \\[.*", "", names(data))
+    
 #### Analysing the data
 # Now that we have a dataset in the desired format, we can proceed to the analysis.
 
@@ -56,17 +78,41 @@ names(data) <- #hint: try using the function sub() with the regexp " \\[.*"
 #    Try using ggplot to create a plot of scatter showing GDP p/c vs Tax revenue. Add a
 #    simple linear regression line.
   
+data %>%
+  ggplot(aes(`Tax revenue (% of GDP)`, `GDP per capita (current US$)`)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+
+
 # 2. Now let's try the same using GDP p/c vs Ease of Doing Business.
+
+data %>%
+  ggplot(aes(`Ease of doing business rank (1=most business-friendly regulations)`, 
+             `GDP per capita (current US$)`)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+
 
 # 3. And, for the sake of argument, let's see what the relationship is between Tax and
 #    Ease of Doing Business.
+
+data %>%
+  ggplot(aes(`Ease of doing business rank (1=most business-friendly regulations)`, 
+             `Tax revenue (% of GDP)`)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+
 
 # 4. Let's think for a minute before we perform the multivariate regression: what kind
 #    of interaction are we seeing with these three plots?
 
 # 5. Now let's run a regression!
-
+# 5. Now let's run a regression!
 formula <- `GDP per capita (current US$)` ~ `Tax revenue (% of GDP)` + `Ease of doing business rank (1=most business-friendly regulations)`
+
+reg <- lm(formula, data)
+
+summary(reg)
 
 # How do we interpret these results?
 
@@ -83,6 +129,23 @@ formula <- `GDP per capita (current US$)` ~ `Tax revenue (% of GDP)` + `Ease of 
 # plots window to create a pdf of the plot below. Save it in the same folder as your 
 # latex template.
 
+pdf("test.pdf")
+data %>%
+  ggplot(aes(`Tax revenue (% of GDP)`, 
+             `GDP per capita (current US$)`, 
+             alpha = `Ease of doing business rank (1=most business-friendly regulations)`)) +
+  geom_point() +
+  geom_smooth(method = "lm", show.legend = FALSE) +
+  coord_cartesian(ylim = c(0, 150000)) +
+  labs(title = "GDP per capita and Tax Revenue (2019)",
+       subtitle = "World Bank data - Europe and Central Asia",
+       alpha = "Ease of doing\nbusiness") +
+  theme(legend.position = c(.85, .75),
+        legend.title = element_text(size = 6),
+        legend.text = element_text(size = 6),
+        legend.key.size = unit(0.5, "cm"))
+dev.off()
+
 data %>%
   ggplot(aes(`Tax revenue (% of GDP)`, 
              `GDP per capita (current US$)`, 
@@ -91,6 +154,7 @@ data %>%
 # 2. Regression table
 # We'll use stargazer to create the latex code for our regression table. Clear your 
 # console, then run the code below.
+stargazer(reg, type = "latex")
 
 stargazer()
 
