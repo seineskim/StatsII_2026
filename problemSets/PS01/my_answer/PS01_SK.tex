@@ -39,21 +39,21 @@
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
 
 \lstdefinestyle{mystyle}{
-	backgroundcolor=\color{backcolour},   
+	backgroundcolor=\color{backcolour},
 	commentstyle=\color{codegreen},
 	keywordstyle=\color{magenta},
 	numberstyle=\tiny\color{codegray},
 	stringstyle=\color{codepurple},
-	basicstyle=\footnotesize,
-	breakatwhitespace=false,         
-	breaklines=true,                 
-	captionpos=b,                    
-	keepspaces=true,                 
-	numbers=left,                    
-	numbersep=5pt,                  
-	showspaces=false,                
+	basicstyle=\footnotesize\ttfamily,
+	breakatwhitespace=false,
+	breaklines=true,
+	captionpos=b,
+	keepspaces=true,
+	numbers=left,
+	numbersep=5pt,
+	showspaces=false,
 	showstringspaces=false,
-	showtabs=false,                  
+	showtabs=false,
 	tabsize=2
 }
 \lstset{style=mystyle}
@@ -69,41 +69,86 @@
 	\maketitle
 	\section*{Instructions}
 	\begin{itemize}
-	\item Please show your work! You may lose points by simply writing in the answer. If the problem requires you to execute commands in \texttt{R}, please include the code you used to get your answers. Please also include the \texttt{.R} file that contains your code. If you are not sure if work needs to be shown for a particular problem, please ask.
-\item Your homework should be submitted electronically on GitHub in \texttt{.pdf} form.
-\item This problem set is due before 23:59 on Wednesday February 11, 2026. No late assignments will be accepted.
+		\item Please show your work! You may lose points by simply writing in the answer. If the problem requires you to execute commands in \texttt{R}, please include the code you used to get your answers. Please also include the \texttt{.R} file that contains your code. If you are not sure if work needs to be shown for a particular problem, please ask.
+		\item Your homework should be submitted electronically on GitHub in \texttt{.pdf} form.
+		\item This problem set is due before 23:59 on Wednesday February 11, 2026. No late assignments will be accepted.
 	\end{itemize}
-
+	
 	\vspace{.25cm}
-\section*{Question 1} 
-\vspace{.25cm}
-\noindent The Kolmogorov-Smirnov test uses cumulative distribution statistics test the similarity of the empirical distribution of some observed data and a specified PDF, and serves as a goodness of fit test. The test statistic is created by:
-
-$$D = \max_{i=1:n} \Big\{ \frac{i}{n}  - F_{(i)}, F_{(i)} - \frac{i-1}{n} \Big\}$$
-
-\noindent where $F$ is the theoretical cumulative distribution of the distribution being tested and $F_{(i)}$ is the $i$th ordered value. Intuitively, the statistic takes the largest absolute difference between the two distribution functions across all $x$ values. Large values indicate dissimilarity and the rejection of the hypothesis that the empirical distribution matches the queried theoretical distribution. The p-value is calculated from the Kolmogorov-
-Smirnoff CDF:
-
-$$p(D \leq d)= \frac{\sqrt {2\pi}}{d} \sum _{k=1}^{\infty }e^{-(2k-1)^{2}\pi ^{2}/(8d^{2})}$$
-
-
-\noindent which generally requires approximation methods (see \href{https://core.ac.uk/download/pdf/25787785.pdf}{Marsaglia, Tsang, and Wang 2003}). This so-called non-parametric test (this label comes from the fact that the distribution of the test statistic does not depend on the distribution of the data being tested) performs poorly in small samples, but works well in a simulation environment. Write an \texttt{R} function that implements this test where the reference distribution is normal. Using \texttt{R} generate 1,000 Cauchy random variables (\texttt{rcauchy(1000, location = 0, scale = 1)}) and perform the test (remember, use the same seed, something like \texttt{set.seed(123)}, whenever you're generating your own data).\\
+	\section*{Question 1}
+	\vspace{.25cm}
+	\noindent The Kolmogorov-Smirnov test uses cumulative distribution statistics test the similarity of the empirical distribution of some observed data and a specified PDF, and serves as a goodness of fit test. The test statistic is created by:
+	
+	$$D = \max_{i=1:n} \Big\{ \frac{i}{n}  - F_{(i)}, F_{(i)} - \frac{i-1}{n} \Big\}$$
+	
+	\noindent where $F$ is the theoretical cumulative distribution of the distribution being tested and $F_{(i)}$ is the $i$th ordered value. Intuitively, the statistic takes the largest absolute difference between the two distribution functions across all $x$ values. Large values indicate dissimilarity and the rejection of the hypothesis that the empirical distribution matches the queried theoretical distribution. The p-value is calculated from the Kolmogorov-
+	Smirnoff CDF:
+	
+	$$p(D \leq d)= \frac{\sqrt {2\pi}}{d} \sum _{k=1}^{\infty }e^{-(2k-1)^{2}\pi ^{2}/(8d^{2})}$$
 	
 	
-\noindent As a hint, you can create the empirical distribution and theoretical CDF using this code:
-
-\begin{lstlisting}[language=R]
-	# create empirical distribution of observed data
-	ECDF <- ecdf(data)
-	empiricalCDF <- ECDF(data)
-	# generate test statistic
-	D <- max(abs(empiricalCDF - pnorm(data))) \end{lstlisting}
-
-\vspace{3in}
-
-\section*{Question 2}
-\noindent Estimate an OLS regression in \texttt{R} that uses the Newton-Raphson algorithm (specifically \texttt{BFGS}, which is a quasi-Newton method), and show that you get the equivalent results to using \texttt{lm}. Use the code below to create your data.
-\vspace{.5cm}
-\lstinputlisting[language=R, firstline=51,lastline=53]{PS01.R} 
-
+	\noindent which generally requires approximation methods (see \href{https://core.ac.uk/download/pdf/25787785.pdf}{Marsaglia, Tsang, and Wang 2003}). This so-called non-parametric test (this label comes from the fact that the distribution of the test statistic does not depend on the distribution of the data being tested) performs poorly in small samples, but works well in a simulation environment. Write an \texttt{R} function that implements this test where the reference distribution is normal. Using \texttt{R} generate 1,000 Cauchy random variables (\texttt{rcauchy(1000, location = 0, scale = 1)}) and perform the test (remember, use the same seed, something like \texttt{set.seed(123)}, whenever you're generating your own data).\\
+	
+	
+	\noindent As a hint, you can create the empirical distribution and theoretical CDF using this code:
+	
+	\begin{lstlisting}[language=R]
+		# create empirical distribution of observed data
+		ECDF <- ecdf(data)
+		empiricalCDF <- ECDF(data)
+		# generate test statistic
+		D <- max(abs(empiricalCDF - pnorm(data))) \end{lstlisting}
+	
+	\vspace{0.5cm}
+	\textbf{Answer:}
+	
+	I generated 1,000 random variables from a Cauchy distribution and calculated the KS statistic $D$. Then, I implemented the p-value approximation using the provided infinite series formula. 
+	
+	\lstinputlisting[language=R, firstline=42, lastline=70]{PS01_SK.R}
+	
+	\vspace{0.3cm}
+	\noindent \textbf{Results:}
+	\begin{itemize}
+		\item \textbf{KS Statistic ($D$):} 0.1347281
+		\item \textbf{Calculated p-value:} $5.65 \times 10^{-29}$
+	\end{itemize}
+	
+	Since the p-value is effectively 0, we reject the null hypothesis that the data comes from a Normal distribution. Substantively, this result confirms that the data generating process (Cauchy) produces extreme values (heavy tails) that are fundamentally distinct from the Gaussian assumption used in the test.
+	
+	\newpage
+	
+	\section*{Question 2}
+	\noindent Estimate an OLS regression in \texttt{R} that uses the Newton-Raphson algorithm (specifically \texttt{BFGS}, which is a quasi-Newton method), and show that you get the equivalent results to using \texttt{lm}. Use the code below to create your data.
+	\vspace{.5cm}
+	\begin{lstlisting}[language=R]
+		set.seed (123)
+		data <- data.frame(x = runif(200, 1, 10))
+		data$y <- 0 + 2.75*data$x + rnorm(200, 0, 1.5)
+	\end{lstlisting}
+	
+	\vspace{0.5cm}
+	\textbf{Answer:}
+	
+	I defined a loss function to calculate the Sum of Squared Residuals (SSR) and minimized it using the \texttt{optim()} function with the \texttt{BFGS} method. The data was generated with a true intercept of 0 and a slope of 2.75.
+	
+	\lstinputlisting[language=R, firstline=78, lastline=110]{PS01_SK.R}
+	
+	\vspace{0.3cm}
+	\noindent \textbf{Results:}
+	Comparing the coefficients, the BFGS algorithm yields results nearly identical to the standard \texttt{lm} function:
+	
+	\begin{verbatim}
+		--- BFGS Results ---
+		[1] 0.1391778  2.7267000
+		
+		--- lm Results ---
+		(Intercept)           x 
+		0.1391874      2.7266985 
+	\end{verbatim}
+	
+	\noindent \textbf{Interpretation:}
+	Substantively, the estimated slope coefficient of approximately \textbf{2.73} implies that a one-unit increase in $x$ is associated with a 2.73-unit increase in $y$. This estimate aligns closely with the true parameter (2.75) used in the data generation process.
+	
+	The difference between the optimization method and the analytical OLS solution is negligible ($1.11 \times 10^{-5}$). This confirms that the BFGS algorithm successfully minimized the unexplained variation (residuals) to the same level as the standard linear model.
+	
 \end{document}
