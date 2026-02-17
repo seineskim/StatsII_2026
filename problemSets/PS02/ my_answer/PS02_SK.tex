@@ -72,61 +72,209 @@
 		\item Please show your work! You may lose points by simply writing in the answer. If the problem requires you to execute commands in \texttt{R}, please include the code you used to get your answers. Please also include the \texttt{.R} file that contains your code. If you are not sure if work needs to be shown for a particular problem, please ask.
 		\item Your homework should be submitted electronically on GitHub in \texttt{.pdf} form.
 		\item This problem set is due before 23:59 on Wednesday February 18, 2026. No late assignments will be accepted.
-
-	\end{itemize}
-
-	\vspace{.25cm}
-
-\noindent We're interested in what types of international environmental agreements or policies people support (\href{https://www.pnas.org/content/110/34/13763}{Bechtel and Scheve 2013)}. So, we asked 8,500 individuals whether they support a given policy, and for each participant, we vary the (1) number of countries that participate in the international agreement and (2) sanctions for not following the agreement. \\
-
-\noindent Load in the data labeled \texttt{climateSupport.RData} on GitHub, which contains an observational study of 8,500 observations.
-
-\begin{itemize}
-	\item
-	Response variable: 
-	\begin{itemize}
-		\item \texttt{choice}: 1 if the individual agreed with the policy; 0 if the individual did not support the policy
-	\end{itemize}
-	\item
-	Explanatory variables: 
-	\begin{itemize}
-		\item
-		\texttt{countries}: Number of participating countries [20 of 192; 80 of 192; 160 of 192]
-		\item
-		\texttt{sanctions}: Sanctions for missing emission reduction targets [None, 5\%, 15\%, and 20\% of the monthly household costs given 2\% GDP growth]
 		
 	\end{itemize}
 	
-\end{itemize}
-
-\newpage
-\noindent Please answer the following questions:
-
-\begin{enumerate}
-	\item
-	Remember, we are interested in predicting the likelihood of an individual supporting a policy based on the number of countries participating and the possible sanctions for non-compliance.
-	\begin{enumerate}
-		\item [] Fit an additive model. Provide the summary output, the global null hypothesis, and $p$-value. Please describe the results and provide a conclusion.
-
-	\end{enumerate}
+	\vspace{.25cm}
 	
-	\item
-	If any of the explanatory variables are statistically significant in this model, then:
-	\begin{enumerate}
-		\item
-		For the policy in which nearly all countries participate [160 of 192], how does increasing sanctions from 5\% to 15\% change the odds that an individual will support the policy? (Interpretation of a coefficient)
-		\item
-		For the policy in which very few countries participate [20 of 192], how does increasing sanctions from 5\% to 15\% change the odds that an individual will support the policy? (Interpretation of a coefficient)
-		\item
-		What is the estimated probability that an individual will support a policy if there are 80 of 192 countries participating with no sanctions? 
+	\noindent We're interested in what types of international environmental agreements or policies people support (\href{https://www.pnas.org/content/110/34/13763}{Bechtel and Scheve 2013)}. So, we asked 8,500 individuals whether they support a given policy, and for each participant, we vary the (1) number of countries that participate in the international agreement and (2) sanctions for not following the agreement. \\
 	
-	\end{enumerate}
-	\item
-	Would the answers to 2a and 2b potentially change if we included an interaction term in this model? Why? 
+	\noindent Load in the data labeled \texttt{climateSupport.RData} on GitHub, which contains an observational study of 8,500 observations.
+	
 	\begin{itemize}
-		\item Perform a test to see if including an interaction is appropriate.
+		\item
+		Response variable: 
+		\begin{itemize}
+			\item \texttt{choice}: 1 if the individual agreed with the policy; 0 if the individual did not support the policy
+		\end{itemize}
+		\item
+		Explanatory variables: 
+		\begin{itemize}
+			\item
+			\texttt{countries}: Number of participating countries [20 of 192; 80 of 192; 160 of 192]
+			\item
+			\texttt{sanctions}: Sanctions for missing emission reduction targets [None, 5\%, 15\%, and 20\% of the monthly household costs given 2\% GDP growth]
+			
+		\end{itemize}
+		
 	\end{itemize}
+	
+	\newpage
+	\noindent Please answer the following questions:
+	
+	\begin{enumerate}
+		\item
+		Remember, we are interested in predicting the likelihood of an individual supporting a policy based on the number of countries participating and the possible sanctions for non-compliance.
+		\begin{enumerate}
+			\item [] Fit an additive model. Provide the summary output, the global null hypothesis, and $p$-value. Please describe the results and provide a conclusion.
+			
+			\lstinputlisting[
+			language=R,
+			firstline=45,
+			lastline=50
+			]{PS02_SK.R}
+			
+			\vspace{0.5cm}
+			
+			\noindent \textbf{R Output:}
+			\begin{table}[H]
+				\centering
+				\caption{Logistic Regression Results: Additive Model}
+				\label{tab:additive_model}
+				\begin{tabular}{l d{4} d{4} d{3} l}
+					\hline \hline
+					\multicolumn{1}{c}{Variable} & \multicolumn{1}{c}{Estimate} & \multicolumn{1}{c}{Std. Error} & \multicolumn{1}{c}{z value} & \multicolumn{1}{c}{Pr(>|z|)} \\ 
+					\hline
+					(Intercept)  & -0.0057 & 0.0220 & -0.258 & 0.7965 \\
+					countries.L  &  0.4585 & 0.0381 & 12.033 & < 2e-16$^{***}$ \\
+					countries.Q  & -0.0100 & 0.0381 & -0.261 & 0.7937 \\
+					sanctions.L  & -0.2763 & 0.0439 & -6.291 & 3.15e-10$^{***}$ \\
+					sanctions.Q  & -0.1811 & 0.0440 & -4.119 & 3.80e-05$^{***}$ \\
+					sanctions.C  &  0.1502 & 0.0440 &  3.414 & 0.0006$^{***}$ \\
+					\hline
+					Null Deviance & \multicolumn{4}{l}{11783 (df = 8499)} \\
+					Residual Deviance & \multicolumn{4}{l}{11568 (df = 8494)} \\
+					AIC & \multicolumn{4}{l}{11580} \\
+					\hline \hline
+					\multicolumn{5}{l}{\textsuperscript{***}$p<0.001$, \textsuperscript{**}$p<0.01$, \textsuperscript{*}$p<0.05$}
+				\end{tabular}
+			\end{table}
+			
+			\lstinputlisting[
+			language=R,
+			firstline=52,
+			lastline=57
+			]{PS02_SK.R}
+			
+			\vspace{0.5cm}
+			
+			\begin{table}[ht]
+				\centering
+				\caption{Likelihood Ratio Test (LRT) for Model Comparison}
+				\label{tab:lrt_result}
+				\begin{tabular}{l c c c c c}
+					\hline \hline
+					Model & Resid. Df & Resid. Dev & Df & Deviance & $Pr(>\chi^2)$ \\ 
+					\hline
+					1: Null (Intercept Only) & 8499 & 11,783 & & & \\
+					2: Additive Model & 8494 & 11,568 & 5 & 215.15 & $< 2.2 \times 10^{-16}$ $^{***}$ \\
+					\hline \hline
+					\multicolumn{6}{l}{\textsuperscript{***}$p < 0.001$}
+				\end{tabular}
+			\end{table}
+			
+			
+			\newpage
+			
+			\subsection*{Description of Results}
+			
+			The additive logistic regression model indicates that both the number of participating countries and the level of sanctions are significant predictors of policy support. Specifically:
+			
+			\begin{itemize}
+				\item \textbf{Model Comparison and Significance:} To evaluate the overall significance of the predictors, a Likelihood-Ratio Test (LRT) was performed comparing the additive model to a null model (intercept-only). The results show a significant reduction in deviance, from $11,783$ in the null model to $11,568$ in the additive model. This deviance reduction of $215.15$ over $5$ degrees of freedom corresponds to a $p$-value of $< 2.2 \times 10^{-16}$, indicating that the predictors collectively improve the model's fit significantly.
+				\item \textbf{Country Participation:} The linear term for countries (\texttt{countries.L}) has a positive and highly significant coefficient ($\beta = 0.458, p < 0.001$). This suggests that as the number of participating countries increases, the likelihood of an individual supporting the policy also increases significantly.
+				\item \textbf{Sanctions:} The linear effect of sanctions (\texttt{sanctions.L}) is negative and significant ($\beta = -0.276, p < 0.001$). This implies that higher household costs from sanctions decrease the probability of support.
+				\item \textbf{Non-linearity:} The significance of the quadratic (\texttt{.Q}) and cubic (\texttt{.C}) terms suggests a non-linear relationship between sanction levels and support.
+			\end{itemize}
+			
+			\subsection*{Conclusion}
+			
+			The Global Null Hypothesis ($H_0$) for this model states that none of the explanatory variables (country participation and sanctions) influence the probability of an individual supporting the policy ($\beta_1 = \beta_2 = \beta_3 = \beta_4 = \beta_5 = 0$). That is, neither the number of participating countries nor the level of sanctions has any effect on the likelihood of policy support. Based on the Likelihood-Ratio Test results ($p < 2.2 \times 10^{-16}$), we strongly reject the global null hypothesis. We conclude that the additive model provides a significantly better fit than the null model and that a policy is most likely to gain support when it involves a high number of participating countries while keeping household-level sanctions at a minimum.
+			
+		\end{enumerate}
+		\newpage
+		\item
+		If any of the explanatory variables are statistically significant in this model, then:
+		\begin{enumerate}
+			\item
+			For the policy in which nearly all countries participate [160 of 192], how does increasing sanctions from 5\% to 15\% change the odds that an individual will support the policy? (Interpretation of a coefficient)
+			
+			Before fitting the model, I performed a data transformation step.
+			\begin{quote}
+				\textit{The \texttt{countries} and \texttt{sanctions} variables were converted to regular factors to ensure that the regression output provides dummy variable coefficients instead of polynomial trends, allowing for the specific coefficient interpretations required in later sections.}
+			\end{quote}
+			
+			\lstinputlisting[
+			language=R,
+			firstline=62,
+			lastline=72
+			]{PS02_SK.R}
+			
+			[1] "Change in odds (160 countries): 0.722"
+			\vspace{0.5cm}
+			
+			\noindent \textbf{Answer} \\
+			In the policy condition where nearly all countries participate (160 of 192), increasing the sanctions from 5\% to 15\% multiplies the odds of an individual supporting the policy by approximately \textbf{0.722}. This indicates that, holding participation constant at 160 countries, the increase in household costs results in a roughly 27.8\% decrease in the odds of support ($1 - 0.722 = 0.278$).
+			\vspace{0.5cm}
+			
+			\item
+			For the policy in which very few countries participate [20 of 192], how does increasing sanctions from 5\% to 15\% change the odds that an individual will support the policy? (Interpretation of a coefficient)
+			
+			\lstinputlisting[
+			language=R,
+			firstline=74,
+			lastline=79
+			]{PS02_SK.R}
+			
+			[1] "Change in odds (20 countries): 0.722"
+			
+			\vspace{0.5cm}		
+			\noindent \textbf{Answer} \\
+			For the policy in which very few countries participate (20 of 192), increasing sanctions from 5\% to 15\% also multiplies the odds of individual support by approximately \textbf{0.722}. Because the model is \textbf{additive}, the effect of sanctions on the odds of support is estimated to be independent of the level of international participation. This is because additive models assume that the effect of one variable is fixed across all levels of the other variables; thus, the sanctions' impact does not vary regardless of whether participation is high or low. Consequently, the results for 2(a) and 2(b) are identical under this model specification.
+			\vspace{0.5cm}
+			
+			\item
+			What is the estimated probability that an individual will support a policy if there are 80 of 192 countries participating with no sanctions?
+			
+			\lstinputlisting[
+			language=R,
+			firstline=81,
+			lastline=88
+			]{PS02_SK.R}
+			
+			[1] "Estimated Probability: 0.516"
+			\vspace{0.5cm}		
+			
+			\noindent \textbf{Answer} \\
+			The estimated probability that an individual will support a policy involving 80 of 192 participating countries with no sanctions (\textit{None}) is approximately \textbf{0.516} (or 51.6\%). This value is obtained by applying the logistic inverse link function to the sum of the intercept and the coefficient for 80 participating countries.
+			
+		\end{enumerate}
+		
+		\item
+		Would the answers to 2a and 2b potentially change if we included an interaction term in this model? Why? 
+		\begin{itemize}
+			\item Perform a test to see if including an interaction is appropriate.
+		\end{itemize}
+		
+		\lstinputlisting[
+		language=R,
+		firstline=81,
+		lastline=88
+		]{PS02_SK.R}
+		
+		\begin{table}[ht]
+			\centering
+			\caption{Likelihood Ratio Test: Additive vs. Interaction Model}
+			\label{tab:lrt_interaction}
+			\begin{tabular}{l c c c c c}
+				\hline \hline
+				Model & Resid. Df & Resid. Dev & Df & Deviance & $Pr(>\chi^{2})$ \\ 
+				\hline
+				1: Additive Model & 8494 & 11,568 & & & \\
+				2: Interaction Model & 8488 & 11,562 & 6 & 6.2928 & 0.3912 \\
+				\hline \hline
+			\end{tabular}
+		\end{table}
+		
+		\noindent \textbf{Answer} \\
+		Yes, the answers to 2(a) and 2(b) could \textbf{potentially} change if an interaction term were included. This is because an interaction model allows the marginal effect of sanctions to vary across different levels of country participation. In such a model, the change in odds calculated in 2(a) for 160 countries would not necessarily be the same as the change calculated in 2(b) for 20 countries.
+		
+		\vspace{0.3cm}
+		
+		\noindent \textbf{Test for Appropriateness:} \\
+		To determine if including an interaction is appropriate for this data, a Likelihood Ratio Test (LRT) was performed comparing the additive and interaction models. The results show a Deviance reduction of $6.2928$ with $6$ degrees of freedom, resulting in a $p$-value of \textbf{0.3912}. Since the $p$-value is much greater than the significance level of $0.05$, we fail to reject the null hypothesis that the additive model is sufficient. Therefore, including an interaction term is \textbf{not statistically appropriate}, and the consistent effects found in the additive model (Problem 2) are more reliable for this dataset.
+		
 	\end{enumerate}
-
-
+	
+	
 \end{document}
