@@ -1,0 +1,134 @@
+
+          Coef Std. Error t value Pr(>|t|) CI_lower CI_upper
+indirect 1.339      0.161   8.301        0    1.022    1.655
+
+---
+
+Residual standard error: 4.206
+Multiple R-squared(full model): 0.198	Adjusted R-squared: 0.153
+Multiple R-squared(proj model): 0.005	Adjusted R-squared: -0.051
+F-statistic(proj model): 68.899 on 1 and 21779 DF, p-value: < 0.000
+
+---
+
+Variance Type:  Robust
+
+---
+Absorbed degrees of freedom:
+    Categories -Redundant =Num.Coefs
+bfs       1211          1       1210
+     Categories -Redundant =Num.Coefs
+year         19          1         18
+Some treated units has too few pre-treatment periods; they are removed automatically.
+Parallel computing ...
+Bootstrapping for uncertainties ... 1000 runs
+
+Out-of-Sample Test...
+
+Pre-period 0 (one period before treatment)
+
+Pre-period -1
+
+Pre-period -2
+
+Pre-period -3
+
+Pre-period -4
+
+Pre-period -5
+
+Pre-period -6
+
+Pre-period -7
+
+Pre-period -8
+
+Pre-period -9
+
+Pre-period -10
+
+Pre-period -11
+
+Pre-period -12
+
+Pre-period -13
+
+Pre-period -14
+
+Pre-period -15
+
+Pre-period -16
+Call:
+fect.formula(formula = as.formula(FEct.formula), data = d, index = FE, 
+    force = "two-way", r = 0, CV = FALSE, method = "ife", se = 1, 
+    nboots = nboots, parallel = 1, tol = 1e-05, loo = 1)
+
+ATT:
+                            ATT   S.E. CI.lower CI.upper   p.value
+Tr obs equally weighted   1.767 0.2021   1.3712    2.163 0.000e+00
+Tr units equally weighted 1.249 0.2067   0.8436    1.654 1.534e-09
+Some treated units has too few pre-treatment periods; they are removed automatically.
+Parallel computing ...
+Bootstrapping for uncertainties ... 1000 runs
+Call:
+fect.formula(formula = as.formula(FEct.formula), data = d, index = FE, 
+    force = "two-way", r = 0, CV = FALSE, method = "fe", se = 1, 
+    nboots = nboots, parallel = 1, tol = 1e-05, placeboTest = 1, 
+    placebo.period = c(-2, 0))
+
+ATT:
+                            ATT   S.E. CI.lower CI.upper   p.value
+Tr obs equally weighted   1.845 0.2287   1.3963    2.293 6.661e-16
+Tr units equally weighted 1.234 0.2247   0.7941    1.675 3.914e-08
+
+Placebo effect for pre-treatment periods:
+     ATT.placebo   S.E. CI.lower CI.upper p.value CI.lower(90%) CI.upper(90%)
+[1,]      0.1455 0.1813  -0.2098   0.5009   0.422       -0.1526        0.4437
+Some treated units has too few pre-treatment periods; they are removed automatically.
+Parallel computing ...
+Cross-validating ... 
+Criterion: Mean Squared Prediction Error
+Some units have too few pre-treatment observations. Remove them automatically in Cross-Validation.
+Matrix completion method...
+
+ lambda.norm = 1.00000; MSPE = 23.10770; GMSPE = 1.86609; Moment = 0.54549; MSPTATT = 0.06270; MSE = 18.09066*
+ lambda.norm = 0.42170; MSPE = 23.06250; GMSPE = 1.64736; Moment = 0.55283; MSPTATT = 0.01871; MSE = 6.55440
+ lambda.norm = 0.17783; MSPE = 23.04269; GMSPE = 1.66587; Moment = 0.55235; MSPTATT = 0.00334; MSE = 1.16572
+ lambda.norm = 0.07499; MSPE = 23.00475; GMSPE = 1.74090; Moment = 0.55170; MSPTATT = 0.00060; MSE = 0.20738
+
+ lambda.norm* = 1
+
+Bootstrapping for uncertainties ... 1000 runs
+Call:
+fect.formula(formula = as.formula(FEct.formula), data = d, index = FE, 
+    force = "two-way", CV = TRUE, cv.prop = 0.1, cv.treat = 1, 
+    cv.nobs = 3, method = "mc", se = TRUE, nboots = nboots, parallel = 1, 
+    tol = 0.001, loo = 0)
+
+ATT:
+                            ATT   S.E. CI.lower CI.upper   p.value
+Tr obs equally weighted   1.767 0.1980   1.3793    2.155 0.000e+00
+Tr units equally weighted 1.249 0.2018   0.8532    1.644 6.134e-10
+Specified labels in the order of: Under Control, Under Treatment.
+
+          Coef Std. Error t value Pr(>|t|) CI_lower CI_upper
+indirect 1.339      0.161   8.301        0    1.022    1.655
+
+---
+
+Residual standard error: 4.206
+Multiple R-squared(full model): 0.198	Adjusted R-squared: 0.153
+Multiple R-squared(proj model): 0.005	Adjusted R-squared: -0.051
+F-statistic(proj model): 68.899 on 1 and 21779 DF, p-value: < 0.000
+
+---
+
+Variance Type:  Robust
+
+---
+Absorbed degrees of freedom:
+    Categories -Redundant =Num.Coefs
+bfs       1211          1       1210
+     Categories -Redundant =Num.Coefs
+year         19          1         18
+Time difference of 6.036474 mins
