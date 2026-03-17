@@ -1,0 +1,1498 @@
+---
+output:
+  bookdown::pdf_document2:
+    fig_caption: yes
+    keep_tex: yes
+    template: header-bjps.tex
+    toc: no
+---
+```{r,include=FALSE}
+
+library(knitr)
+knitr::opts_chunk$set(eval = TRUE, echo = FALSE, message=FALSE, warning=FALSE)
+library(kableExtra)
+library(MASS)
+library(DescTools)
+library(survey)
+library(dplyr)
+library(ggplot2)
+library(ggthemes)
+library(gridExtra)
+library(ggthemes)
+library(plotrix)
+library(plyr)
+library(gtsummary)
+library(coefplot)
+library(questionr)
+library(psych)
+library(snakecase)
+library(questionr)
+#library(sjmisc)
+library(coefplot)
+library(stargazer)
+library(tidyr)
+library(forcats)
+library(stringr)
+library(readr)
+library(tidyverse)
+library(glue)
+library(papaja)
+
+
+load("C:/Users/ntite/Dropbox/voter-characteristics-experiment/Experiment 2 (closeness)/Clean_Data/CleanDataExperiment2")
+
+```
+```{r regression_nointeraction_Chunk,include=FALSE}
+Homophily.model.ordinal <- polr(ChoiceNFactor~Match.GenderD+Match.EducationD+Match.subClassD+Match.subFamClassD+Match.HomeStatusD+
+                                  Match.regionD+Match.religionD+Match.ethnicityD+Match.incomeD+Match.AgeGroupD
+                                , weights=data.experiment2.Second$W8, data = data.experiment2.Second)
+Homophily1 <- coef(summary(Homophily.model.ordinal)) %>%
+  data.frame() %>% 
+  tibble::rownames_to_column("term")
+Homophily1 <- Homophily1[-c(11,12),]
+glimpse(Homophily1)
+
+
+Homophily1<- Homophily1 %>%
+  mutate(term = dplyr::recode(term, "Match.AgeGroupD" = "Age", "Match.EducationD" = "Education",
+                              "Match.ethnicityD" = "Ethnicity", "Match.incomeD" = "Income", "Match.GenderD" = "Gender",
+                              "Match.HomeStatusD" = "HomeStatus", "Match.regionD" = "Region",
+                              "Match.religionD" = "Religion", "Match.subClassD" = "Subjective class",
+                              "Match.subFamClassD" = "Subjective family Class"))
+Homophily1 <- Homophily1 %>%
+  mutate(term = fct_rev(term))
+
+P.Homophily.1<-ggplot(Homophily1, aes(x=term, y=exp(Value))) + 
+  geom_errorbar(aes(ymin=exp(Value-2*Std..Error), ymax=exp(Value+2*Std..Error)), width=.1) +
+  geom_point(shape=19, size=2, alpha=0.7) +
+  geom_hline(yintercept=1, linetype="dashed", 
+             size=1, color="blue", alpha=0.5)+
+  theme_clean()+ 
+  theme(plot.title = element_text(hjust = 0.5, face = "plain")) +
+  xlab("") + ylab("")+
+  coord_flip(ylim = c(-1, 3))+
+  theme(legend.position = "none")
+
+```
+
+
+```{r regression_oneata_time, include=FALSE}
+
+
+One_At_A_Time <- function(varind){
+  model<- polr(paste("ChoiceNFactor~",varind),
+                                   weights=data.experiment2.Second$w8, data=data.experiment2.Second, Hess = T )
+  M<-data.frame(coef(summary(model))[1,1])
+  M[1,2]<-data.frame(coef(summary(model))[1,2])
+  rownames(M)[1]<-varind
+  colnames(M)[1]<-"Value"
+  colnames(M)[2]<-"Std. Error"
+  return(M) 
+}
+
+
+
+
+OneAtTime<-data.frame(matrix(NA, 10,2))
+rownames(OneAtTime)<-c("Match.GenderD", "Match.EducationD", "Match.subClassD", "Match.subFamClassD", "Match.HomeStatusD",
+                       "Match.regionD", "Match.religionD", "Match.ethnicityD", "Match.incomeD", "Match.AgeGroupD")
+for (i in rownames(OneAtTime)){
+  OneAtTime[i,1:2]<-  One_At_A_Time(i)
+}
+colnames(OneAtTime)[c(1,2)]<-c("Value","Std.Error")
+OneAtTime<- OneAtTime %>%
+  tibble::rownames_to_column("Name")
+OneAtTime<- OneAtTime %>%
+  mutate(Name = dplyr::recode(Name, "Match.AgeGroupD" = "Age", "Match.EducationD" = "Education",
+                              "Match.ethnicityD" = "Ethnicity", "Match.incomeD" = "Income", "Match.GenderD" = "Gender",
+                              "Match.HomeStatusD" = "HomeStatus", "Match.regionD" = "Region",
+                              "Match.religionD" = "Religion", "Match.subClassD" = "Subjective class",
+                              "Match.subFamClassD" = "Subjective family Class"))
+
+P.OneAtTime.1<-ggplot(OneAtTime, aes(x=Name, y=exp(Value))) + 
+  geom_errorbar(aes(ymin=exp(Value-2*Std.Error), ymax=exp(Value+2*Std.Error)), width=.1) +
+  geom_point(shape=19, size=2, alpha=0.7) +
+  geom_hline(yintercept=1, linetype="dashed", 
+             size=1, color="blue", alpha=0.5)+
+  theme_clean()+ 
+  xlab("") + ylab("")+
+  coord_flip(ylim = c(-1, 3))+
+  theme(legend.position = "none",
+        strip.text.y = element_blank(), panel.background = element_rect(fill="#00000000"))+
+  facet_grid(Name~., scale="free", space= "free")
+
+```
+
+```{r,include=FALSE}
+data.experiment2.Second_1 <-data.experiment2.Second %>%
+  filter(ProfileB == exp22)
+
+Homophily.model.ordinal_1 <- polr(ChoiceNFactor~Match.GenderD+Match.EducationD+Match.subClassD+Match.subFamClassD+Match.HomeStatusD+
+                                  Match.regionD+Match.religionD+Match.ethnicityD+Match.incomeD+Match.AgeGroupD
+                                , weights=data.experiment2.Second_1$W8, data = data.experiment2.Second_1)
+Homophily1_1 <- coef(summary(Homophily.model.ordinal_1)) %>%
+  data.frame() %>% 
+  tibble::rownames_to_column("term")
+Homophily1_1 <- Homophily1_1[-c(11,12),]
+glimpse(Homophily1_1)
+
+
+Homophily1_1<- Homophily1_1 %>%
+  mutate(term = dplyr::recode(term, "Match.AgeGroupD" = "Age_Task 1", "Match.EducationD" = "Education_Task 1",
+                              "Match.ethnicityD" = "Ethnicity_Task 1", "Match.incomeD" = "Income_Task 1", "Match.GenderD" = "Gender_Task 1",
+                              "Match.HomeStatusD" = "HomeStatus_Task 1", "Match.regionD" = "Region_Task 1",
+                              "Match.religionD" = "Religion_Task 1", "Match.subClassD" = "Subjective class_Task 1",
+                              "Match.subFamClassD" = "Subjective family Class_Task 1"))
+Homophily1_1 <- Homophily1_1 %>%
+  mutate(term = fct_rev(term))
+
+data.experiment2.Second_2 <-data.experiment2.Second %>%
+  filter(ProfileB == exp42)
+
+Homophily.model.ordinal_2 <- polr(ChoiceNFactor~Match.GenderD+Match.EducationD+Match.subClassD+Match.subFamClassD+Match.HomeStatusD+
+                                  Match.regionD+Match.religionD+Match.ethnicityD+Match.incomeD+Match.AgeGroupD
+                                , weights=data.experiment2.Second_2$W8, data = data.experiment2.Second_2)
+Homophily1_2 <- coef(summary(Homophily.model.ordinal_2)) %>%
+  data.frame() %>% 
+  tibble::rownames_to_column("term")
+Homophily1_2 <- Homophily1_2[-c(11,12),]
+glimpse(Homophily1_2)
+
+
+Homophily1_2<- Homophily1_2 %>%
+  mutate(term = dplyr::recode(term, "Match.AgeGroupD" = "Age_Task 2", "Match.EducationD" = "Education_Task 2",
+                              "Match.ethnicityD" = "Ethnicity_Task 2", "Match.incomeD" = "Income_Task 2", "Match.GenderD" = "Gender_Task 2",
+                              "Match.HomeStatusD" = "HomeStatus_Task 2", "Match.regionD" = "Region_Task 2",
+                              "Match.religionD" = "Religion_Task 2", "Match.subClassD" = "Subjective class_Task 2",
+                              "Match.subFamClassD" = "Subjective family Class_Task 2"))
+Homophily1_2 <- Homophily1_2 %>%
+  mutate(term = fct_rev(term))
+
+data.experiment2.Second_3 <-data.experiment2.Second %>%
+  filter(ProfileB == exp62)
+
+Homophily.model.ordinal_3 <- polr(ChoiceNFactor~Match.GenderD+Match.EducationD+Match.subClassD+Match.subFamClassD+Match.HomeStatusD+
+                                  Match.regionD+Match.religionD+Match.ethnicityD+Match.incomeD+Match.AgeGroupD
+                                , weights=data.experiment2.Second_3$W8, data = data.experiment2.Second_3)
+Homophily1_3 <- coef(summary(Homophily.model.ordinal_3)) %>%
+  data.frame() %>% 
+  tibble::rownames_to_column("term")
+Homophily1_3 <- Homophily1_3[-c(11,12),]
+glimpse(Homophily1_3)
+
+
+Homophily1_3<- Homophily1_3 %>%
+  mutate(term = dplyr::recode(term, "Match.AgeGroupD" = "Age_Task 3", "Match.EducationD" = "Education_Task 3",
+                              "Match.ethnicityD" = "Ethnicity_Task 3", "Match.incomeD" = "Income_Task 3", "Match.GenderD" = "Gender_Task 3",
+                              "Match.HomeStatusD" = "HomeStatus_Task 3", "Match.regionD" = "Region_Task 3",
+                              "Match.religionD" = "Religion_Task 3", "Match.subClassD" = "Subjective class_Task 3",
+                              "Match.subFamClassD" = "Subjective family Class_Task 3"))
+Homophily1_3 <- Homophily1_3 %>%
+  mutate(term = fct_rev(term))
+
+data.experiment2.Second_4 <-data.experiment2.Second %>%
+  filter(ProfileB == exp82)
+
+Homophily.model.ordinal_4 <- polr(ChoiceNFactor~Match.GenderD+Match.EducationD+Match.subClassD+Match.subFamClassD+Match.HomeStatusD+
+                                  Match.regionD+Match.religionD+Match.ethnicityD+Match.incomeD+Match.AgeGroupD
+                                , weights=data.experiment2.Second_4$W8, data = data.experiment2.Second_4)
+Homophily1_4 <- coef(summary(Homophily.model.ordinal_4)) %>%
+  data.frame() %>% 
+  tibble::rownames_to_column("term")
+Homophily1_4 <- Homophily1_4[-c(11,12),]
+glimpse(Homophily1_4)
+
+
+Homophily1_4<- Homophily1_4 %>%
+  mutate(term = dplyr::recode(term, "Match.AgeGroupD" = "Age_Task 4", "Match.EducationD" = "Education_Task 4",
+                              "Match.ethnicityD" = "Ethnicity_Task 4", "Match.incomeD" = "Income_Task 4", "Match.GenderD" = "Gender_Task 4",
+                              "Match.HomeStatusD" = "HomeStatus_Task 4", "Match.regionD" = "Region_Task 4",
+                              "Match.religionD" = "Religion_Task 4", "Match.subClassD" = "Subjective class_Task 4",
+                              "Match.subFamClassD" = "Subjective family Class_Task 4"))
+Homophily1_4 <- Homophily1_4 %>%
+  mutate(term = fct_rev(term))
+
+data.experiment2.Second_5 <-data.experiment2.Second %>%
+  filter(ProfileB == exp102)
+
+Homophily.model.ordinal_5 <- polr(ChoiceNFactor~Match.GenderD+Match.EducationD+Match.subClassD+Match.subFamClassD+Match.HomeStatusD+
+                                  Match.regionD+Match.religionD+Match.ethnicityD+Match.incomeD+Match.AgeGroupD
+                                , weights=data.experiment2.Second_5$W8, data = data.experiment2.Second_5)
+Homophily1_5 <- coef(summary(Homophily.model.ordinal_5)) %>%
+  data.frame() %>% 
+  tibble::rownames_to_column("term")
+Homophily1_5 <- Homophily1_5[-c(11,12),]
+glimpse(Homophily1_5)
+
+
+Homophily1_5<- Homophily1_5 %>%
+  mutate(term = dplyr::recode(term, "Match.AgeGroupD" = "Age_Task 5", "Match.EducationD" = "Education_Task 5",
+                              "Match.ethnicityD" = "Ethnicity_Task 5", "Match.incomeD" = "Income_Task 5", "Match.GenderD" = "Gender_Task 5",
+                              "Match.HomeStatusD" = "HomeStatus_Task 5", "Match.regionD" = "Region_Task 5",
+                              "Match.religionD" = "Religion_Task 5", "Match.subClassD" = "Subjective class_Task 5",
+                              "Match.subFamClassD" = "Subjective family Class_Task 5"))
+Homophily1_5 <- Homophily1_5 %>%
+  mutate(term = fct_rev(term))
+
+Homophily_Sensitivity<-rbind(Homophily1_1,Homophily1_2,Homophily1_3,Homophily1_4,Homophily1_5)
+
+Homophily_Sensitivity<- Homophily_Sensitivity %>%
+  separate(term, c("term", "task"), sep= "_")
+
+P.Sensitivity<-ggplot(Homophily_Sensitivity, aes(x=fct_relevel(task, "Task 5","Task 4","Task 3","Task 2", "Task 1")
+                                                               , y=exp(Value))) + 
+  geom_errorbar(aes(ymin=exp(Value-2*Std..Error), ymax=exp(Value+2*Std..Error)), width=.1) +
+  geom_point(shape=19, size=2, alpha=0.7) +
+  geom_hline(yintercept=1, linetype="dashed", 
+             size=1, color="blue", alpha=0.5)+
+  theme_clean()+ 
+  ggtitle("Political commonality for each social category by task order") + theme(plot.title = element_text(hjust = 0.5, face = "plain")) +
+  xlab("") + ylab("")+
+  coord_flip(ylim = c(-1, 3))+
+  facet_grid(term~., scales = "free_y", space = "free_y")+
+  theme(legend.position="bottom", strip.text.y =element_text(angle = 0),
+        panel.grid.major.y = element_line(colour = "grey95"),
+        panel.background = element_rect(colour = "black"))
+
+
+
+
+```
+
+# Online Appendix
+
+```{r regression_attribute_interaction, include=FALSE}
+data.experiment2.Second<-data.experiment2.Second %>%
+  mutate(education.respondent = recode_factor(educ5, "Level 5 and above" = "University",
+                        .default="Not university"))
+
+data.experiment2.Second<-data.experiment2.Second %>%
+  mutate(White.respondent2 = recode_factor(Ethnicity_Respondent, "White" = "White",
+                                       .default="Not white"))
+
+data.experiment2.Second<-data.experiment2.Second %>%
+  mutate(Religion.respondent2 = recode_factor(BESPanel.profile_religion2, "Hinduism" = NA_character_))
+levels(data.experiment2.Second$BESPanel.profile_house_tenure)
+
+data.experiment2.Second<-data.experiment2.Second %>%
+  mutate( HomeStatus.respondent  = recode_factor(BESPanel.profile_house_tenure, "Own outright"= "Own",
+                                      "Own with a mortgage" = "Own",
+                                      "Own (part-own) through shared ownership scheme (i.e. pay part mortgage, part rent)" = "Own",
+                                      "Rent from a private landlord" = "Rent", 
+                                      "Rent from a housing association" = "Rent",
+                                      .default = NA_character_))
+
+data.experiment2.Second<-data.experiment2.Second %>%
+  mutate(SubClass.respondent = recode_factor(subjClass.RespondentClass, "Yes, middle class"  = "Middle class",
+                                        "Yes, working class" = "Working class",
+                                      .default = NA_character_))
+
+
+data.experiment2.Second<-data.experiment2.Second %>%
+  mutate(London.respondent = recode_factor(profile_GOR, "London" = "London",
+                                    .default = "Not London"))
+
+data.experiment2.Second$Income.respondent2<-
+  car::   recode(data.experiment2.Second$profile_gross_household,
+                 "c('under £5,000 per year', '£5,000 to £9,999 per year','£10,000 to £14,999 per year','£15,000 to £19,999 per year', '£20,000 to £24,999 per year')  = 'Less than £25.000';
+                 c('£25,000 to £29,999 per year', '£30,000 to £34,999 per year','£35,000 to £39,999 per year', '£40,000 to £44,999 per year')  = 'Between £25.000 and £44.999';
+                                    c( '£45,000 to £49,999 per year', '£50,000 to £59,999 per year', '£60,000 to £69,999 per year','£70,000 to £99,999 per year', '£100,000 to £149,999 per year', '£150,000 and over') = 'More than £45.000';
+                                      else = NA")
+data.experiment2.Second$Religion.respondent2<-
+  car::recode(data.experiment2.Second$Religion.respondent2,
+                 "c('Islam', 'Methodist', 'Presbyterian/Church of Scotland')  = 'Other' ")
+data.experiment2.Second$Age.respondent<- as.numeric(data.experiment2.Second$Age.respondent)
+data.experiment2.Second$AgeGroup.respondent<-NA
+data.experiment2.Second$AgeGroup.respondent[data.experiment2.Second$Age.respondent<=34]<-"18-34"
+data.experiment2.Second$AgeGroup.respondent[data.experiment2.Second$Age.respondent>=35 & data.experiment2.Second$Age.respondent<=49]<-"35-49"
+data.experiment2.Second$AgeGroup.respondent[data.experiment2.Second$Age.respondent>=50 & data.experiment2.Second$Age.respondent<=64]<-"50-64"
+data.experiment2.Second$AgeGroup.respondent[data.experiment2.Second$Age.respondent>=65]<-"65 +"
+data.experiment2.Second$AgeGroup.respondent<-as.factor(data.experiment2.Second$AgeGroup.respondent)
+
+ordinal.model2<-polr(ChoiceNFactor~Match.GenderD*profile_gender+Match.EducationD*education.respondent+
+                       Match.subClassD*SubClass.respondent+
+                       Match.HomeStatusD*HomeStatus.respondent+ Match.regionD*London.respondent+Match.religionD*Religion.respondent2+
+                       Match.ethnicityD*White.respondent2+Match.incomeD*Income.respondent2+
+                       Match.AgeGroupD*AgeGroup.respondent+Match.subFamClassD*SubClass.respondent
+                     , weights=data.experiment2.Second$W8, data = data.experiment2.Second, Hess=T)
+
+CovInteraction <- function(m1, x) {
+  vcov_2 <- vcov(m1) %>%
+    data.frame() %>% 
+    tibble::rownames_to_column("term")
+  vcov_x <-vcov_2 %>%
+    dplyr::filter(str_detect(term, glue("{x}")))
+  vcov_x <-bind_rows(vcov_x[,c("term",x)])
+  colnames(vcov_x)[colnames(vcov_x)==x] <- "Covariance"
+  return(vcov_x)
+}
+
+Cov.Education<-CovInteraction(ordinal.model2, "Match.EducationD")
+Cov.Ethnicity<-CovInteraction(ordinal.model2, "Match.ethnicityD")
+Cov.Home<-CovInteraction(ordinal.model2, "Match.HomeStatusD")
+Cov.Gender<-CovInteraction(ordinal.model2, "Match.GenderD")
+Cov.Region<-CovInteraction(ordinal.model2, "Match.regionD")
+Cov.Religion<-CovInteraction(ordinal.model2, "Match.religionD")
+Cov.Class<-CovInteraction(ordinal.model2, "Match.subClassD")
+Cov.Age<-CovInteraction(ordinal.model2, "Match.AgeGroupD")
+Cov.Income<- CovInteraction(ordinal.model2, "Match.incomeD")
+
+Homophily2 <- coef(summary(ordinal.model2)) %>%
+  data.frame() %>% 
+  tibble::rownames_to_column("term")
+vcov_2 <- vcov(ordinal.model2) %>%
+  data.frame() %>% 
+  tibble::rownames_to_column("term")
+Cov.FamilyClass<- vcov_2 %>%
+  dplyr::filter(str_detect(term, "Match.subFamClassD"))
+Cov.FamilyClass <- Cov.FamilyClass %>%
+  dplyr:: select(term, "Covariance" = Match.subFamClassD)
+
+Covariances<-rbind(Cov.Education, Cov.Ethnicity,
+          Cov.Home, Cov.Gender, Cov.Region, Cov.Religion, Cov.Class,Cov.FamilyClass, Cov.Age, Cov.Income)
+
+
+InteractionIdentity<- left_join(Covariances, Homophily2, by = "term")  
+  
+InteractionIdentity<- InteractionIdentity %>%
+mutate(term, Coefficient = dplyr::recode(term,  
+                 "Match.EducationD"= "Education.a" ,
+          "Match.EducationD:education.respondentNot university"= "Education.b" ,
+          "Match.ethnicityD"= "Ethnicity.a" ,
+          "Match.ethnicityD:White.respondent2Not white"= "Ethnicity.b" ,
+         "Match.GenderD" ="Gender.a"  ,
+         "Match.GenderD:profile_genderFemale"= "Gender.b"  ,
+         "Match.HomeStatusD" ="Housing.a"  ,
+         "Match.HomeStatusD:HomeStatus.respondentRent"= "Housing.b"  ,
+          "Match.regionD" ="Region.a" ,
+          "Match.regionD:London.respondentNot London" ="Region.b" ,
+         "Match.religionD" ="Religion.a" ,
+         "Match.religionD:Religion.respondent2Other" = "Religion.d"  ,
+         "Match.religionD:Religion.respondent2No religion"= "Religion.c",
+          "Match.religionD:Religion.respondent2Roman Catholic" ="Religion.b" ,
+          "Match.subClassD" ="Class.a" ,
+          "Match.subClassD:SubClass.respondentWorking class"= "Class.b" ,
+          "Match.subFamClassD" ="FamClass.a" ,
+          "SubClass.respondentWorking class:Match.subFamClassD"= "FamClass.b" ,
+          	"Match.AgeGroupD"= "Age.a" ,
+         "Match.AgeGroupD:AgeGroup.respondent35-49" = "Age.b",
+         "Match.AgeGroupD:AgeGroup.respondent50-64" = "Age.c",
+         "Match.AgeGroupD:AgeGroup.respondent65 +" = "Age.d",
+          "Match.incomeD" ="Income.a" ,
+          "Match.incomeD:Income.respondent2Less than £25.000"= "Income.b" ,
+          "Match.incomeD:Income.respondent2More than £45.000"= "Income.c" ))
+
+#Obtain coefficents
+
+InteractionIdentityCoef<- InteractionIdentity %>%
+  dplyr::select(Coefficient, Value)
+InteractionIdentityCoef<- InteractionIdentityCoef %>%
+  tidyr::separate(col=Coefficient, into=c("Coefficient","type"))
+InteractionIdentityCoef<- InteractionIdentityCoef %>%
+  tidyr::spread(type, Value, convert=T)
+
+InteractionIdentityCoef<- InteractionIdentityCoef %>%
+  mutate(b= InteractionIdentityCoef$a + InteractionIdentityCoef$b)
+InteractionIdentityCoef<- InteractionIdentityCoef %>%
+  mutate(c= InteractionIdentityCoef$a + InteractionIdentityCoef$c)
+InteractionIdentityCoef<- InteractionIdentityCoef %>%
+  mutate(d= InteractionIdentityCoef$a + InteractionIdentityCoef$d)
+
+#Obtain standard errors
+
+InteractionIdentityCov<- InteractionIdentity %>%
+  dplyr::select(Coefficient, Covariance)
+InteractionIdentityCov<- InteractionIdentityCov %>%
+  tidyr::separate(col=Coefficient, into=c("Coefficient","type"))
+InteractionIdentityCov<- InteractionIdentityCov %>%
+  tidyr::spread(type, Covariance, convert=T)
+InteractionIdentityCov<- InteractionIdentityCov %>%
+  dplyr::rename("Covariance00"= "a" ,
+                "Covariance01" ="b" ,
+                "Covariance02" ="c" ,
+                "Covariance03" ="d" )
+
+InteractionIdentitySE<- InteractionIdentity %>%
+  dplyr::select(Coefficient, Std..Error)
+InteractionIdentitySE<- InteractionIdentitySE %>%
+  tidyr::separate(col=Coefficient, into=c("Coefficient","type"))
+InteractionIdentitySE<- InteractionIdentitySE %>%
+  tidyr::spread(type, Std..Error, convert=T)
+InteractionIdentitySE<- InteractionIdentitySE %>%
+  dplyr::rename("SE0"= "a" ,
+                "SE1" ="b" ,
+                "SE2" ="c" ,
+                "SE3" ="d")
+
+InteractionIdentitySE.tidy<- left_join(InteractionIdentitySE, InteractionIdentityCov, by = "Coefficient")
+InteractionIdentitySE.tidy[,3:5]<-InteractionIdentitySE.tidy[,3:5]^2
+InteractionIdentitySE.tidy[,7:9]<-InteractionIdentitySE.tidy[,7:9]*2
+colnames(InteractionIdentitySE.tidy)
+InteractionIdentitySE.tidy<- InteractionIdentitySE.tidy %>%
+  mutate(SE1= sqrt( InteractionIdentitySE.tidy$Covariance00 +InteractionIdentitySE.tidy$SE1 + InteractionIdentitySE.tidy$Covariance01))
+InteractionIdentitySE.tidy<- InteractionIdentitySE.tidy %>%
+  mutate(SE2= sqrt ( InteractionIdentitySE.tidy$Covariance00 +InteractionIdentitySE.tidy$SE2 + InteractionIdentitySE.tidy$Covariance02))
+InteractionIdentitySE.tidy<- InteractionIdentitySE.tidy %>%
+  mutate(SE3= sqrt( InteractionIdentitySE.tidy$Covariance00 +InteractionIdentitySE.tidy$SE3 + InteractionIdentitySE.tidy$Covariance03))
+
+
+#Tyding up
+
+InteractionIdentitySE.tidy <- InteractionIdentitySE.tidy %>%
+  dplyr::select( "Name"=Coefficient, starts_with("SE"))
+InteractionIdentitySE.tidy <- InteractionIdentitySE.tidy %>%
+  gather(key="level", value = "SE", starts_with("SE"))
+InteractionIdentitySE.tidy <- InteractionIdentitySE.tidy %>%
+  mutate( level = parse_number(level))
+InteractionIdentitySE.tidy <- InteractionIdentitySE.tidy %>%
+  unite("Name", c(Name, level))
+InteractionIdentitySE.tidy <- InteractionIdentitySE.tidy %>%
+  filter(!is.na(SE))
+
+InteractionIdentityCoef.tidy <- InteractionIdentityCoef %>%
+  dplyr::select( "Name"=Coefficient, 'Co0' = a, 'Co1' = b, 'Co2'= c, 'Co3'=d)
+InteractionIdentityCoef.tidy <- InteractionIdentityCoef.tidy %>%
+  gather(key="level", value = "Coefficient", starts_with("Co"))
+InteractionIdentityCoef.tidy <- InteractionIdentityCoef.tidy %>%
+  mutate( level = parse_number(level))
+InteractionIdentityCoef.tidy <- InteractionIdentityCoef.tidy %>%
+  unite("Name", c(Name, level))
+InteractionIdentityCoef.tidy <- InteractionIdentityCoef.tidy %>%
+  filter(!is.na(Coefficient))
+
+InteractionIdentity.tidy <- left_join(InteractionIdentitySE.tidy, InteractionIdentityCoef.tidy, by = "Name")
+
+levels(as.factor(InteractionIdentity.tidy$Name))
+InteractionIdentity.tidy <-InteractionIdentity.tidy[order(InteractionIdentity.tidy$Name),]
+InteractionIdentity.tidy2 <- InteractionIdentity.tidy %>%
+  mutate(Name = recode_factor(Name,
+                       "Age_0" = "Age: 18-34",
+                        "Age_1" = "Age: 35-49",
+                       "Age_2" = "Age: 50-64",
+                       "Age_3" = "Age: 65 +",
+        "Education_1" = "Education: No University degree",
+        "Education_0" = "Education: University degree",
+         "Ethnicity_1" = "Ethnicity: non-White",
+         "Ethnicity_0" = "Ethnicity: White",
+         "Gender_0"  = "Gender: Male",
+         "Gender_1" = "Gender: Female",
+         "Housing_0" = "Housing: Owner",
+         "Housing_1" = "Housing: Renter",
+         "Region_0" = "Region: London",
+         "Region_1"   = "Region: Not London",
+         "Religion_0" = "Religion: Anglican",
+        "Religion_1" = "Religion: Roman Catholic",
+        "Religion_2" = "Religion: No religion",
+        "Religion_3" = "Religion: Others",
+         "Class_0" = "Subjective class: Middle class",
+         "Class_1" = "Subjective class: Working class",
+        "FamClass_0" = "Subjective family Class: Middle class",
+         "FamClass_1" = "Subjective family Class: Working class",
+        "Income_0" ="Income: Between £25.000 and £44.999" ,
+        "Income_1" = "Income: Less than 25.000" ,
+        "Income_2" = "Income: More than £45.000" ))
+
+InteractionIdentity.tidy2<- InteractionIdentity.tidy2 %>%
+  tidyr::separate(col=Name, into=c("Attribute","Name"), sep=": ")
+#InteractionIdentity.tidy2<- InteractionIdentity.tidy2 %>%
+#  filter(!(Name == "0"))
+InteractionIdentity.tidy2<- InteractionIdentity.tidy2 %>%
+  mutate(Name= fct_reorder(Name,desc(Coefficient)))
+InteractionIdentity.tidy2<- InteractionIdentity.tidy2 %>%
+  mutate(Name = fct_relevel(Name, "18-34", "35-49", "50-64", "65 +"))
+  
+P.Homophily.2<-ggplot(InteractionIdentity.tidy2, aes(x=Name, y=exp(Coefficient), col=Attribute)) + 
+  geom_errorbar(aes(ymin=exp(Coefficient-2*SE), ymax=exp(Coefficient+2*SE)), width=.2) +
+  geom_point(shape=19, size=2) +
+  geom_hline(yintercept=1, linetype="dashed", 
+             size=1, color="grey", alpha=0.5)+
+  theme_clean()+ 
+  xlab("") + ylab("")+
+  coord_flip(ylim = c(-1, 4))+
+  facet_grid(Attribute~., space="free", scale="free") + 
+  theme(strip.text.y = element_blank())
+
+ordinal.model2ByClass<-polr(ChoiceNFactor~Match.GenderD*SubClass.respondent+Match.EducationD*SubClass.respondent+
+                       Match.subClassD*SubClass.respondent+
+                       Match.HomeStatusD*SubClass.respondent+ Match.regionD*SubClass.respondent+Match.religionD*SubClass.respondent+
+                       Match.ethnicityD*SubClass.respondent+Match.incomeD*SubClass.respondent+
+                       Match.AgeGroupD*SubClass.respondent+Match.subFamClassD*SubClass.respondent
+                     , weights=filter(data.experiment2.Second, Ethnicity_Respondent == "White")$W8, data = filter(data.experiment2.Second, Ethnicity_Respondent == "White"), Hess=T)
+
+
+Cov.Education<-CovInteraction(ordinal.model2ByClass, "Match.EducationD")
+Cov.Ethnicity<-CovInteraction(ordinal.model2ByClass, "Match.ethnicityD")
+Cov.Home<-CovInteraction(ordinal.model2ByClass, "Match.HomeStatusD")
+Cov.Gender<-CovInteraction(ordinal.model2ByClass, "Match.GenderD")
+Cov.Region<-CovInteraction(ordinal.model2ByClass, "Match.regionD")
+Cov.Religion<-CovInteraction(ordinal.model2ByClass, "Match.religionD")
+Cov.Class<-CovInteraction(ordinal.model2ByClass, "Match.subClassD")
+Cov.Age<-CovInteraction(ordinal.model2ByClass, "Match.AgeGroupD")
+Cov.Income<- CovInteraction(ordinal.model2ByClass, "Match.incomeD")
+
+Homophily2 <- coef(summary(ordinal.model2ByClass)) %>%
+  data.frame() %>% 
+  tibble::rownames_to_column("term")
+vcov_2 <- vcov(ordinal.model2ByClass) %>%
+  data.frame() %>% 
+  tibble::rownames_to_column("term")
+Cov.FamilyClass<- vcov_2 %>%
+  dplyr::filter(str_detect(term, "Match.subFamClassD"))
+Cov.FamilyClass <- Cov.FamilyClass %>%
+  dplyr:: select(term, "Covariance" = Match.subFamClassD)
+
+Covariances<-rbind(Cov.Education, Cov.Ethnicity,
+                   Cov.Home, Cov.Gender, Cov.Region, Cov.Religion, Cov.Class,Cov.FamilyClass, Cov.Age, Cov.Income)
+
+
+InteractionIdentity<- left_join(Covariances, Homophily2, by = "term")  
+
+InteractionIdentity<- InteractionIdentity %>%
+  mutate(term, Coefficient = dplyr::recode(term,  
+                                           "Match.EducationD"= "Education.a" ,
+                                           "SubClass.respondentWorking class:Match.EducationD"= "Education.b" ,
+                                           "Match.ethnicityD"= "Ethnicity.a" ,
+                                           "SubClass.respondentWorking class:Match.ethnicityD"= "Ethnicity.b" ,
+                                           "Match.GenderD" ="Gender.a"  ,
+                                           "Match.GenderD:SubClass.respondentWorking class"= "Gender.b"  ,
+                                           "Match.HomeStatusD" ="Housing.a"  ,
+                                           "SubClass.respondentWorking class:Match.HomeStatusD"= "Housing.b"  ,
+                                           "Match.regionD" ="Region.a" ,
+                                           "SubClass.respondentWorking class:Match.regionD" ="Region.b" ,
+                                           "Match.religionD" ="Religion.a" ,
+                                           "SubClass.respondentWorking class:Match.religionD" = "Religion.b"  ,
+                                           "Match.subClassD" ="Class.a" ,
+                                           "SubClass.respondentWorking class:Match.subClassD"= "Class.b" ,
+                                           "Match.subFamClassD" ="FamClass.a" ,
+                                           "SubClass.respondentWorking class:Match.subFamClassD"= "FamClass.b" ,
+                                           "Match.AgeGroupD"= "Age.a" ,
+                                           "SubClass.respondentWorking class:Match.AgeGroupD" = "Age.b",
+                                           "Match.incomeD" ="Income.a" ,
+                                           "SubClass.respondentWorking class:Match.incomeD"= "Income.b" ))
+
+#Obtain coefficents
+
+InteractionIdentityCoef<- InteractionIdentity %>%
+  dplyr::select(Coefficient, Value)
+InteractionIdentityCoef<- InteractionIdentityCoef %>%
+  tidyr::separate(col=Coefficient, into=c("Coefficient","type"))
+InteractionIdentityCoef<- InteractionIdentityCoef %>%
+  tidyr::spread(type, Value, convert=T)
+
+InteractionIdentityCoef<- InteractionIdentityCoef %>%
+  mutate(b= InteractionIdentityCoef$a + InteractionIdentityCoef$b)
+
+#Obtain standard errors
+
+InteractionIdentityCov<- InteractionIdentity %>%
+  dplyr::select(Coefficient, Covariance)
+InteractionIdentityCov<- InteractionIdentityCov %>%
+  tidyr::separate(col=Coefficient, into=c("Coefficient","type"))
+InteractionIdentityCov<- InteractionIdentityCov %>%
+  tidyr::spread(type, Covariance, convert=T)
+InteractionIdentityCov<- InteractionIdentityCov %>%
+  dplyr::rename("Covariance00"= "a" ,
+                "Covariance01" ="b"  )
+
+InteractionIdentitySE<- InteractionIdentity %>%
+  dplyr::select(Coefficient, Std..Error)
+InteractionIdentitySE<- InteractionIdentitySE %>%
+  tidyr::separate(col=Coefficient, into=c("Coefficient","type"))
+InteractionIdentitySE<- InteractionIdentitySE %>%
+  tidyr::spread(type, Std..Error, convert=T)
+InteractionIdentitySE<- InteractionIdentitySE %>%
+  dplyr::rename("SE0"= "a" ,
+                "SE1" ="b" )
+
+InteractionIdentitySE.tidy<- left_join(InteractionIdentitySE, InteractionIdentityCov, by = "Coefficient")
+InteractionIdentitySE.tidy[,3]<-InteractionIdentitySE.tidy[,3]^2
+InteractionIdentitySE.tidy[,5]<-InteractionIdentitySE.tidy[,5]*2
+colnames(InteractionIdentitySE.tidy)
+InteractionIdentitySE.tidy<- InteractionIdentitySE.tidy %>%
+  mutate(SE1= sqrt( InteractionIdentitySE.tidy$Covariance00 +InteractionIdentitySE.tidy$SE1 + InteractionIdentitySE.tidy$Covariance01))
+
+InteractionIdentitySE.tidy <- InteractionIdentitySE.tidy %>%
+  dplyr::select( "Name"=Coefficient, starts_with("SE"))
+InteractionIdentitySE.tidy <- InteractionIdentitySE.tidy %>%
+  gather(key="level", value = "SE", starts_with("SE"))
+InteractionIdentitySE.tidy <- InteractionIdentitySE.tidy %>%
+  mutate( level = parse_number(level))
+InteractionIdentitySE.tidy <- InteractionIdentitySE.tidy %>%
+  unite("Name", c(Name, level))
+InteractionIdentitySE.tidy <- InteractionIdentitySE.tidy %>%
+  filter(!is.na(SE))
+
+InteractionIdentityCoef.tidy <- InteractionIdentityCoef %>%
+  dplyr::select( "Name"=Coefficient, 'Co0' = a, 'Co1' = b)
+InteractionIdentityCoef.tidy <- InteractionIdentityCoef.tidy %>%
+  gather(key="level", value = "Coefficient", starts_with("Co"))
+InteractionIdentityCoef.tidy <- InteractionIdentityCoef.tidy %>%
+  mutate( level = parse_number(level))
+InteractionIdentityCoef.tidy <- InteractionIdentityCoef.tidy %>%
+  unite("Name", c(Name, level))
+InteractionIdentityCoef.tidy <- InteractionIdentityCoef.tidy %>%
+  filter(!is.na(Coefficient))
+
+InteractionIdentity.tidy <- left_join(InteractionIdentitySE.tidy, InteractionIdentityCoef.tidy, by = "Name")
+
+levels(as.factor(InteractionIdentity.tidy$Name))
+InteractionIdentity.tidy <-InteractionIdentity.tidy[order(InteractionIdentity.tidy$Name),]
+InteractionIdentity.tidy2 <- InteractionIdentity.tidy %>%
+  mutate(Name = recode_factor(Name,
+                              "Age_0" = "Age: Middle class",
+                              "Age_1" = "Age: Working class",
+                              "Education_1" = "Education: Working class",
+                              "Education_0" = "Education: Middle class",
+                              "Ethnicity_1" = "Ethnicity: Working class",
+                              "Ethnicity_0" = "Ethnicity: Middle class",
+                              "Gender_0"  = "Gender: Middle class",
+                              "Gender_1" = "Gender: Working class",
+                              "Housing_0" = "Housing: Middle class",
+                              "Housing_1" = "Housing: Working class",
+                              "Region_0" = "Region: Middle class",
+                              "Region_1"   = "Region: Working class",
+                              "Religion_0" = "Religion: Middle class",
+                              "Religion_1" = "Religion: Working class",
+                              "Class_0" = "Subjective class: Middle class",
+                              "Class_1" = "Subjective class: Working class",
+                              "FamClass_0" = "Subjective family Class: Middle class",
+                              "FamClass_1" = "Subjective family Class: Working class",
+                              "Income_0" ="Income: Middle class" ,
+                              "Income_1" = "Income: Working class" ))
+
+InteractionIdentity.tidy2<- InteractionIdentity.tidy2 %>%
+  tidyr::separate(col=Name, into=c("Attribute","Name"), sep=": ")
+#InteractionIdentity.tidy2<- InteractionIdentity.tidy2 %>%
+#  filter(!(Name == "0"))
+InteractionIdentity.tidy2<- InteractionIdentity.tidy2 %>%
+  mutate(Name= fct_reorder(Name,desc(Coefficient)))
+
+
+P.Homophily.By.Class<-ggplot(InteractionIdentity.tidy2, aes(x=Attribute, y=exp(Coefficient), col= Name)) + 
+  geom_errorbar(aes(ymin=exp(Coefficient-2*SE), ymax=exp(Coefficient+2*SE)), width=.2, position = position_dodge(width = 0.5)) +
+  geom_point(shape=19, size=2, position = position_dodge(width = 0.5)) +
+  geom_hline(yintercept=1, linetype="dashed", 
+             size=1, color="grey", alpha=0.5)+
+  theme_clean()+ 
+  xlab("") + ylab("")+
+  coord_flip(ylim = c(0, 4))+
+  facet_grid(Attribute~., scales="free", space = "free")+
+  theme(strip.text.y = element_blank())+
+  scale_color_manual(values= c("salmon1", "palegreen4"), guide = guide_legend(reverse=TRUE))+
+  labs(col= "Social Class")
+
+```
+
+```{r regression_politicsinteraction, include=FALSE}
+data.experiment2.Second<-data.experiment2.Second %>%
+dplyr::  mutate(pastvote_party = recode_factor(pastvote_2017, Conservative  = "Conservative",
+                                     Labour = "Labour",
+                                       .default=NA_character_))
+Homophily.Party.ordinal<- polr(ChoiceNFactor~Match.GenderD*pastvote_party+Match.EducationD*pastvote_party+
+                             Match.subClassD*pastvote_party+Match.subFamClassD*pastvote_party+Match.HomeStatusD*pastvote_party+
+                             Match.regionD*pastvote_party+Match.religionD*pastvote_party+Match.ethnicityD*pastvote_party+
+                             Match.incomeD*pastvote_party+Match.AgeGroupD*pastvote_party,
+                            weights=data.experiment2.Second$W8, data = data.experiment2.Second)
+
+data.experiment2.Second<-data.experiment2.Second %>%
+  mutate(pastvote_Brexit = recode_factor(pastvote_EURef, "I voted to Remain"  = "Remain",
+                                  "I voted to Leave" = "Leave",
+                                  .default=NA_character_))
+Homophily.Brexit.ordinal<- polr(ChoiceNFactor~Match.GenderD*pastvote_Brexit+Match.EducationD*pastvote_Brexit+
+                              Match.subClassD*pastvote_Brexit+Match.subFamClassD*pastvote_Brexit+Match.HomeStatusD*pastvote_Brexit+
+                              Match.regionD*pastvote_Brexit+Match.religionD*pastvote_Brexit+Match.ethnicityD*pastvote_Brexit+
+                              Match.incomeD*pastvote_Brexit+Match.AgeGroupD*pastvote_Brexit
+                            , weights=data.experiment2.Second$W8, data = data.experiment2.Second)
+
+#Interaction with party
+
+
+#Function to extract covariances
+
+
+Cov.Education<-CovInteraction(Homophily.Party.ordinal, "Match.EducationD")
+Cov.Ethnicity<-CovInteraction(Homophily.Party.ordinal, "Match.ethnicityD")
+Cov.Home<-CovInteraction(Homophily.Party.ordinal, "Match.HomeStatusD")
+Cov.Gender<-CovInteraction(Homophily.Party.ordinal, "Match.GenderD")
+Cov.Region<-CovInteraction(Homophily.Party.ordinal, "Match.regionD")
+Cov.Religion<-CovInteraction(Homophily.Party.ordinal, "Match.religionD")
+Cov.Class<-CovInteraction(Homophily.Party.ordinal, "Match.subClassD")
+Cov.Age<-CovInteraction(Homophily.Party.ordinal, "Match.AgeGroupD")
+Cov.Income<- CovInteraction(Homophily.Party.ordinal, "Match.incomeD")
+Cov.FamilyClass <- CovInteraction(Homophily.Party.ordinal, "Match.subFamClassD")
+
+Homophily3 <- coef(summary(Homophily.Party.ordinal)) %>%
+  data.frame() %>% 
+  tibble::rownames_to_column("term")
+#vcov_2 <- vcov(Homophily.Party.ordinal) %>%
+#  data.frame() %>% 
+#  tibble::rownames_to_column("term")
+
+
+Covariances<-rbind(Cov.Education, Cov.Ethnicity,
+                   Cov.Home, Cov.Gender, Cov.Region, Cov.Religion, Cov.Class,Cov.FamilyClass, Cov.Age, Cov.Income)
+
+
+InteractionIdentityP<- left_join(Covariances, Homophily3, by = "term")  
+
+InteractionIdentityP<- InteractionIdentityP %>%
+  mutate(term, term = str_replace(term,"Match.GenderD:pastvote_partyLabour", "pastvote_partyLabour:Match.GenderD"))
+InteractionIdentityP<- InteractionIdentityP %>%
+  mutate(term, Coefficient = str_glue("Conservative:{term}"))
+InteractionIdentityP<- InteractionIdentityP %>%
+  mutate(term, Coefficient = str_remove(Coefficient,"Conservative:pastvote_party"))           
+InteractionIdentityP<- InteractionIdentityP %>%
+  mutate(term, Coefficient = str_remove(Coefficient,"Match."))
+InteractionIdentityP<- InteractionIdentityP %>%
+  mutate(term, Coefficient = str_remove(Coefficient,"D")) 
+
+#Obtain coefficents
+
+InteractionIdentityCoefP<- InteractionIdentityP %>%
+  dplyr::select(Coefficient, Value)
+InteractionIdentityCoefP<- InteractionIdentityCoefP %>%
+  tidyr::separate(col=Coefficient, into=c("type","Coefficient"))
+InteractionIdentityCoefP<- InteractionIdentityCoefP %>%
+  tidyr::spread(type, Value, convert=T)
+
+InteractionIdentityCoefP<- InteractionIdentityCoefP %>%
+  mutate(Labour= InteractionIdentityCoefP$Conservative + InteractionIdentityCoefP$Labour)
+
+#Obtain standard errors
+
+InteractionIdentityCovP<- InteractionIdentityP %>%
+  dplyr::select(Coefficient, Covariance)
+InteractionIdentityCovP<- InteractionIdentityCovP %>%
+  tidyr::separate(col=Coefficient, into=c("type", "Coefficient"))
+InteractionIdentityCovP<- InteractionIdentityCovP %>%
+  tidyr::spread(type, Covariance, convert=T)
+InteractionIdentityCovP<- InteractionIdentityCovP %>%
+  dplyr::rename("Conservative.Cov00"= "Conservative" ,
+                "Labour.Cov01" ="Labour")
+
+InteractionIdentitySEP<- InteractionIdentityP %>%
+  dplyr::select(Coefficient, Std..Error)
+InteractionIdentitySEP<- InteractionIdentitySEP %>%
+  tidyr::separate(col=Coefficient, into=c("type", "Coefficient"))
+InteractionIdentitySEP<- InteractionIdentitySEP %>%
+  tidyr::spread(type, Std..Error, convert=T)
+InteractionIdentitySEP<- InteractionIdentitySEP %>%
+  dplyr::rename("Conservative.SE"= "Conservative" ,
+                "Labour.SE" ="Labour")
+
+InteractionIdentitySE.tidyP<- left_join(InteractionIdentitySEP, InteractionIdentityCovP, by = "Coefficient")
+InteractionIdentitySE.tidyP[,3]<-InteractionIdentitySE.tidyP[,3]^2
+InteractionIdentitySE.tidyP[,5]<-InteractionIdentitySE.tidyP[,5]*2
+InteractionIdentitySE.tidyP<- InteractionIdentitySE.tidyP %>%
+  mutate(Labour.SE=
+           sqrt( InteractionIdentitySE.tidyP$Conservative.Cov00 +InteractionIdentitySE.tidyP$Labour.SE + InteractionIdentitySE.tidyP$Labour.Cov01))
+
+
+
+#Tyding up
+
+InteractionIdentitySE.tidyP <- InteractionIdentitySE.tidyP %>%
+  dplyr::select( "Name"=Coefficient, ends_with("SE"))
+InteractionIdentitySE.tidyP <- InteractionIdentitySE.tidyP %>%
+  gather(key="level", value = "SE", ends_with("SE"))
+InteractionIdentitySE.tidyP <- InteractionIdentitySE.tidyP %>%
+  mutate(level = str_remove(level, ".SE"))
+InteractionIdentitySE.tidyP <- InteractionIdentitySE.tidyP %>%
+  unite("Name", c(Name, level))
+InteractionIdentitySE.tidyP <- InteractionIdentitySE.tidyP %>%
+  filter(!is.na(SE))
+
+InteractionIdentityCoef.tidyP <- InteractionIdentityCoefP %>%
+  dplyr::select( "Name"=Coefficient, Conservative, Labour)
+InteractionIdentityCoef.tidyP <- InteractionIdentityCoef.tidyP %>%
+  gather(key="level", value = "Coefficient", c(Conservative, Labour))
+InteractionIdentityCoef.tidyP <- InteractionIdentityCoef.tidyP %>%
+  unite("Name", c(Name, level))
+InteractionIdentityCoef.tidyP <- InteractionIdentityCoef.tidyP %>%
+  filter(!is.na(Coefficient))
+
+InteractionIdentity.tidyP <- left_join(InteractionIdentitySE.tidyP, InteractionIdentityCoef.tidyP, by = "Name")
+InteractionIdentity.tidyP <-InteractionIdentity.tidyP[order(InteractionIdentity.tidyP$Name),]
+
+
+InteractionIdentity.tidyP2<- InteractionIdentity.tidyP %>%
+  tidyr::separate(col=Name, into=c("Name","Party"), sep="_")
+
+InteractionIdentity.tidyP2<- InteractionIdentity.tidyP2 %>%
+  mutate(Name = dplyr::recode(Name, "AgeGroup" = "Age", "ethnicity" = "Ethnicity",  "income" = "Income", "HomeStatus"="Home Status"
+                              , "region" = "Region", "religion" = "Religion", "subClass" = "Subjective class", "subFamClass" = "Subjective Family Class"))
+
+
+P.Homophily.3<-ggplot(InteractionIdentity.tidyP2, aes(x=Name, y=exp(Coefficient), col=Party)) + 
+  geom_errorbar(aes(ymin=exp(Coefficient-2*SE), ymax=exp(Coefficient+2*SE)), width=.2, position = position_dodge(width = 0.5)) +
+  geom_point(shape=19, size=2, position = position_dodge(width = 0.5)) +
+  geom_hline(yintercept=1, linetype="dashed", 
+             size=1, color="grey", alpha=0.5)+
+  theme_clean()+ 
+  labs(color = "General Election") +
+  theme(plot.title = element_text(hjust = 0.5, face = "plain")) +
+  xlab("") + ylab("")+
+  coord_flip(ylim = c(0, 4))+
+  facet_grid(Name~., scales="free", space = "free")+
+  theme(strip.text.y = element_blank())+
+  scale_color_manual(values= c("#0087DC", "#E4003B"), guide = guide_legend(reverse=TRUE))
+
+
+
+#Interaction with Brexit
+
+
+#Function to extract covariances
+
+
+Cov.Education<-CovInteraction(Homophily.Brexit.ordinal, "Match.EducationD")
+Cov.Ethnicity<-CovInteraction(Homophily.Brexit.ordinal, "Match.ethnicityD")
+Cov.Home<-CovInteraction(Homophily.Brexit.ordinal, "Match.HomeStatusD")
+Cov.Gender<-CovInteraction(Homophily.Brexit.ordinal, "Match.GenderD")
+Cov.Region<-CovInteraction(Homophily.Brexit.ordinal, "Match.regionD")
+Cov.Religion<-CovInteraction(Homophily.Brexit.ordinal, "Match.religionD")
+Cov.Class<-CovInteraction(Homophily.Brexit.ordinal, "Match.subClassD")
+Cov.Age<-CovInteraction(Homophily.Brexit.ordinal, "Match.AgeGroupD")
+Cov.Income<- CovInteraction(Homophily.Brexit.ordinal, "Match.incomeD")
+Cov.FamilyClass <- CovInteraction(Homophily.Brexit.ordinal, "Match.subFamClassD")
+
+Homophily4 <- coef(summary(Homophily.Brexit.ordinal)) %>%
+  data.frame() %>% 
+  tibble::rownames_to_column("term")
+#vcov_2 <- vcov(Homophily.Party.ordinal) %>%
+#  data.frame() %>% 
+#  tibble::rownames_to_column("term")
+
+
+Covariances<-rbind(Cov.Education, Cov.Ethnicity,
+                   Cov.Home, Cov.Gender, Cov.Region, Cov.Religion, Cov.Class,Cov.FamilyClass, Cov.Age, Cov.Income)
+
+
+InteractionIdentityB<- left_join(Covariances, Homophily4, by = "term")  
+
+InteractionIdentityB<- InteractionIdentityB %>%
+  mutate(term, term = str_replace(term,"Match.GenderD:pastvote_BrexitLeave", "pastvote_BrexitLeave:Match.GenderD"))
+InteractionIdentityB<- InteractionIdentityB %>%
+  mutate(term, Coefficient = str_glue("Remain:{term}"))
+InteractionIdentityB<- InteractionIdentityB %>%
+  mutate(term, Coefficient = str_remove(Coefficient,"Remain:pastvote_Brexit"))           
+InteractionIdentityB<- InteractionIdentityB %>%
+  mutate(term, Coefficient = str_remove(Coefficient,"Match."))
+InteractionIdentityB<- InteractionIdentityB %>%
+  mutate(term, Coefficient = str_remove(Coefficient,"D")) 
+
+#Obtain coefficents
+
+InteractionIdentityCoefB<- InteractionIdentityB %>%
+  dplyr::select(Coefficient, Value)
+InteractionIdentityCoefB<- InteractionIdentityCoefB %>%
+  tidyr::separate(col=Coefficient, into=c("type","Coefficient"))
+InteractionIdentityCoefB<- InteractionIdentityCoefB %>%
+  tidyr::spread(type, Value, convert=T)
+
+InteractionIdentityCoefB<- InteractionIdentityCoefB %>%
+  mutate(Leave= InteractionIdentityCoefB$Remain + InteractionIdentityCoefB$Leave)
+
+#Obtain standard errors
+
+InteractionIdentityCovB<- InteractionIdentityB %>%
+  dplyr::select(Coefficient, Covariance)
+InteractionIdentityCovB<- InteractionIdentityCovB %>%
+  tidyr::separate(col=Coefficient, into=c("type", "Coefficient"))
+InteractionIdentityCovB<- InteractionIdentityCovB %>%
+  tidyr::spread(type, Covariance, convert=T)
+InteractionIdentityCovB<- InteractionIdentityCovB %>%
+  dplyr::rename("Remain.Cov00"= "Remain" ,
+                "Leave.Cov01" ="Leave")
+
+InteractionIdentitySEB<- InteractionIdentityB %>%
+  dplyr::select(Coefficient, Std..Error)
+InteractionIdentitySEB<- InteractionIdentitySEB %>%
+  tidyr::separate(col=Coefficient, into=c("type", "Coefficient"))
+InteractionIdentitySEB<- InteractionIdentitySEB %>%
+  tidyr::spread(type, Std..Error, convert=T)
+InteractionIdentitySEB<- InteractionIdentitySEB %>%
+  dplyr::rename("Remain.SE"= "Remain" ,
+                "Leave.SE" ="Leave")
+
+InteractionIdentitySE.tidyB<- left_join(InteractionIdentitySEB, InteractionIdentityCovB, by = "Coefficient")
+InteractionIdentitySE.tidyB[,2]<-InteractionIdentitySE.tidyB[,2]^2
+InteractionIdentitySE.tidyB[,4]<-InteractionIdentitySE.tidyB[,4]*2
+InteractionIdentitySE.tidyB<- InteractionIdentitySE.tidyB %>%
+  mutate(Leave.SE=
+           sqrt( InteractionIdentitySE.tidyB$Remain.Cov00 +InteractionIdentitySE.tidyB$Leave.SE + InteractionIdentitySE.tidyB$Leave.Cov01))
+
+#Tyding up
+
+InteractionIdentitySE.tidyB <- InteractionIdentitySE.tidyB %>%
+  dplyr::select( "Name"=Coefficient, ends_with("SE"))
+InteractionIdentitySE.tidyB <- InteractionIdentitySE.tidyB %>%
+  gather(key="level", value = "SE", ends_with("SE"))
+InteractionIdentitySE.tidyB <- InteractionIdentitySE.tidyB %>%
+  mutate(level = str_remove(level, ".SE"))
+InteractionIdentitySE.tidyB <- InteractionIdentitySE.tidyB %>%
+  unite("Name", c(Name, level))
+InteractionIdentitySE.tidyB <- InteractionIdentitySE.tidyB %>%
+  filter(!is.na(SE))
+
+InteractionIdentityCoef.tidyB <- InteractionIdentityCoefB %>%
+  dplyr::select( "Name"=Coefficient, Remain, Leave)
+InteractionIdentityCoef.tidyB <- InteractionIdentityCoef.tidyB %>%
+  gather(key="level", value = "Coefficient", c(Remain, Leave))
+InteractionIdentityCoef.tidyB <- InteractionIdentityCoef.tidyB %>%
+  unite("Name", c(Name, level))
+InteractionIdentityCoef.tidyB <- InteractionIdentityCoef.tidyB %>%
+  filter(!is.na(Coefficient))
+
+InteractionIdentity.tidyB <- left_join(InteractionIdentitySE.tidyB, InteractionIdentityCoef.tidyB, by = "Name")
+InteractionIdentity.tidyB <-InteractionIdentity.tidyB[order(InteractionIdentity.tidyB$Name),]
+
+
+InteractionIdentity.tidyB2<- InteractionIdentity.tidyB %>%
+  tidyr::separate(col=Name, into=c("Name","Referendum.Vote"), sep="_")
+
+InteractionIdentity.tidyB2<- InteractionIdentity.tidyB2 %>%
+  mutate(Name = dplyr::recode(Name, "AgeGroup" = "Age", "ethnicity" = "Ethnicity", "HomeStatus"="Home Status",  "income" = "Income", "HomeStatus"="Home Status", "region" = "Region", "religion" = "Religion", "subClass" = "Subjective class", "subFamClass" = "Subjective family Class"))
+
+
+P.Homophily.4<-ggplot(InteractionIdentity.tidyB2, aes(x=Name, y=exp(Coefficient), col=Referendum.Vote)) + 
+  geom_errorbar(aes(ymin=exp(Coefficient-2*SE), ymax=exp(Coefficient+2*SE)), width=.2, position = position_dodge(width = 0.5)) +
+  geom_point(shape=19, size=2, position = position_dodge(width = 0.5)) +
+  geom_hline(yintercept=1, linetype="dashed", 
+             size=1, color="grey", alpha=0.5)+
+  theme_clean()+ 
+  labs(color = "EU referendum") +
+  theme(plot.title = element_text(hjust = 0.5, face = "plain")) +
+  xlab("") + ylab("")+
+  coord_flip(ylim = c(0, 4))+
+  facet_grid(Name~., scales="free", space = "free")+
+  theme(strip.text.y = element_blank())+
+  scale_color_manual(values= c("#12B6CF", "#ffd700"), guide = guide_legend(reverse=TRUE))
+```
+```{r regression_no_interaction_Chunk_linear,include=FALSE}
+Homophily.model.linear <- lm(ChoiceN~Match.GenderD+Match.EducationD+Match.subClassD+Match.subFamClassD+Match.HomeStatusD+
+                                  Match.regionD+Match.religionD+Match.ethnicityD+Match.incomeD+Match.AgeGroupD
+                                , weights=data.experiment2.Second$W8, data = data.experiment2.Second)
+Homophily1 <- coef(summary(Homophily.model.linear)) %>%
+  data.frame() %>% 
+  tibble::rownames_to_column("term")
+Homophily1 <- Homophily1 %>%
+  filter(term != "(Intercept)")
+
+
+
+Homophily1<- Homophily1 %>%
+  mutate(term = dplyr::recode(term, "Match.AgeGroupD" = "Age", "Match.EducationD" = "Education",
+                              "Match.ethnicityD" = "Ethnicity", "Match.incomeD" = "Income", "Match.GenderD" = "Gender",
+                              "Match.HomeStatusD" = "HomeStatus", "Match.regionD" = "Region",
+                              "Match.religionD" = "Religion", "Match.subClassD" = "Subjective class",
+                              "Match.subFamClassD" = "Subjective family Class"))
+Homophily1 <- Homophily1 %>%
+  mutate(term = fct_rev(term))
+
+P.Homophily.linear.1<-ggplot(Homophily1, aes(x=term, y=Estimate)) + 
+  geom_errorbar(aes(ymin=Estimate-2*Std..Error, ymax=Estimate+2*Std..Error), width=.1) +
+  geom_point(shape=19, size=1.5, alpha=0.7) +
+  geom_hline(yintercept=0, linetype="dashed", 
+             size=1, color="blue", alpha=0.5)+
+  theme_clean()+ 
+  theme(plot.title = element_text(hjust = 0.5, face = "plain")) +
+  xlab("") + ylab("")+
+  coord_flip(ylim = c(-1, 1))+
+  theme(legend.position = "none")
+
+```
+
+
+```{r regression_one_at_a_time_linear, include=FALSE}
+
+
+One_At_A_Time_linear <- function(varind){
+  model<- lm(paste("ChoiceN~",varind),
+                                   weights=data.experiment2.Second$w8, data=data.experiment2.Second)
+  M<-model %>%
+    summary() %>%
+    coef() %>%
+    data.frame() %>%
+    tibble::rownames_to_column("Name") %>%
+    filter(Name == varind) %>%
+  textshape::column_to_rownames("Name") %>%
+  select(Estimate, Std..Error)
+  return(M) 
+}
+
+
+One_At_A_Time_linear("Match.GenderD")
+
+OneAtTime<-data.frame(matrix(NA, 10,2))
+rownames(OneAtTime)<-c("Match.GenderD", "Match.EducationD", "Match.subClassD", "Match.subFamClassD", "Match.HomeStatusD",
+                       "Match.regionD", "Match.religionD", "Match.ethnicityD", "Match.incomeD", "Match.AgeGroupD")
+for (i in rownames(OneAtTime)){
+  OneAtTime[i,1:2]<-  One_At_A_Time_linear(i)
+}
+colnames(OneAtTime)[c(1,2)]<-c("Value","Std.Error")
+OneAtTime<- OneAtTime %>%
+  tibble::rownames_to_column("Name")
+OneAtTime<- OneAtTime %>%
+  mutate(Name = dplyr::recode(Name, "Match.AgeGroupD" = "Age", "Match.EducationD" = "Education",
+                              "Match.ethnicityD" = "Ethnicity", "Match.incomeD" = "Income", "Match.GenderD" = "Gender",
+                              "Match.HomeStatusD" = "HomeStatus", "Match.regionD" = "Region",
+                              "Match.religionD" = "Religion", "Match.subClassD" = "Subjective class",
+                              "Match.subFamClassD" = "Subjective family Class"))
+
+P.OneAtTime.linear.1<-ggplot(OneAtTime, aes(x=Name, y=Value)) + 
+  geom_errorbar(aes(ymin=Value-2*Std.Error, ymax=Value+2*Std.Error), width=.1) +
+  geom_point(shape=19, size=1.5, alpha=0.7) +
+  geom_hline(yintercept=0, linetype="dashed", 
+             size=1, color="blue", alpha=0.5)+
+  theme_clean()+ 
+  xlab("") + ylab("")+
+  coord_flip(ylim = c(-1, 1))+
+  theme(legend.position = "none",
+        strip.text.y = element_blank(), panel.background = element_rect(fill="#00000000"))+
+  facet_grid(Name~., scale="free", space= "free")
+
+```
+
+
+```{r Appendix regression_politics_interaction, include=FALSE}
+
+
+
+#Interaction Party/EU
+Homophily.PartyBrexit.ordinal<- polr(ChoiceNFactor~Match.GenderD*pastvote_Brexit*pastvote_party+
+                                       Match.EducationD*pastvote_Brexit*pastvote_party+
+                                  Match.subClassD*pastvote_Brexit*pastvote_party+
+                                    Match.subFamClassD*pastvote_Brexit*pastvote_party+
+                                    Match.HomeStatusD*pastvote_Brexit*pastvote_party+
+                                  Match.regionD*pastvote_Brexit*pastvote_party+
+                                    Match.religionD*pastvote_Brexit*pastvote_party+
+                                    Match.ethnicityD*pastvote_Brexit*pastvote_party+
+                                  Match.incomeD*pastvote_Brexit*pastvote_party+
+                                    Match.AgeGroupD*pastvote_Brexit*pastvote_party,
+                                 weights=data.experiment2.Second$W8, data = data.experiment2.Second,
+                                 Hess = T)
+
+Cov.Education<-CovInteraction(Homophily.PartyBrexit.ordinal, "Match.EducationD")
+Cov.Ethnicity<-CovInteraction(Homophily.PartyBrexit.ordinal, "Match.ethnicityD")
+Cov.Home<-CovInteraction(Homophily.PartyBrexit.ordinal, "Match.HomeStatusD")
+Cov.Gender<-CovInteraction(Homophily.PartyBrexit.ordinal, "Match.GenderD")
+Cov.Region<-CovInteraction(Homophily.PartyBrexit.ordinal, "Match.regionD")
+Cov.Religion<-CovInteraction(Homophily.PartyBrexit.ordinal, "Match.religionD")
+Cov.Class<-CovInteraction(Homophily.PartyBrexit.ordinal, "Match.subClassD")
+Cov.Age<-CovInteraction(Homophily.PartyBrexit.ordinal, "Match.AgeGroupD")
+Cov.Income<- CovInteraction(Homophily.PartyBrexit.ordinal, "Match.incomeD")
+Cov.FamilyClass <- CovInteraction(Homophily.PartyBrexit.ordinal, "Match.subFamClassD")
+
+Homophily5 <- coef(summary(Homophily.PartyBrexit.ordinal)) %>%
+  data.frame() %>% 
+  tibble::rownames_to_column("term")
+
+
+Covariances<-rbind(Cov.Education, Cov.Ethnicity,
+                   Cov.Home, Cov.Gender, Cov.Region, Cov.Religion, Cov.Class,Cov.FamilyClass, Cov.Age, Cov.Income)
+
+
+InteractionIdentityPB<- left_join(Covariances, Homophily5, by = "term")  
+
+InteractionIdentityPB<- InteractionIdentityPB %>%
+  mutate(term = str_replace(term,"Match.GenderD:pastvote_partyLabour", "pastvote_partyLabour:Match.GenderD"))
+InteractionIdentityPB<- InteractionIdentityPB %>%
+  mutate(term = str_replace(term,"Match.GenderD:pastvote_BrexitLeave", "pastvote_BrexitLeave:Match.GenderD"))
+InteractionIdentityPB<- InteractionIdentityPB %>%
+  mutate(term = str_replace(term,"pastvote_BrexitLeave:Match.GenderD:pastvote_partyLabour", "pastvote_BrexitLeave:pastvote_partyLabour:Match.GenderD"))
+InteractionIdentityPB<- InteractionIdentityPB %>%
+  mutate(term, Coefficient = str_glue("Conservative.Remain:{term}"))
+InteractionIdentityPB<- InteractionIdentityPB %>%
+  mutate(Coefficient = str_remove(Coefficient, "Remain:pastvote_Brexit"))
+InteractionIdentityPB<- InteractionIdentityPB %>%
+  mutate(Coefficient = str_replace(Coefficient,"Conservative.Remain:pastvote_partyLabour", "Labour.Remain")) 
+InteractionIdentityPB<- InteractionIdentityPB %>%
+  mutate( Coefficient = str_replace(Coefficient,"Conservative.Leave:pastvote_partyLabour", "Labour.Leave"))
+InteractionIdentityPB<- InteractionIdentityPB %>%
+  mutate(Coefficient = str_remove(Coefficient,"Match."))
+InteractionIdentityPB<- InteractionIdentityPB %>%
+  mutate(Coefficient = str_remove(Coefficient,"D")) 
+
+#Obtain coefficents
+
+InteractionIdentityCoefPB<- InteractionIdentityPB %>%
+  dplyr::select(Coefficient, Value)
+InteractionIdentityCoefPB<- InteractionIdentityCoefPB %>%
+  tidyr::separate(col=Coefficient, into=c("type","Coefficient"), sep=":")
+InteractionIdentityCoefPB<- InteractionIdentityCoefPB %>%
+  tidyr::spread(type, Value, convert=T)
+
+InteractionIdentityCoefPB<- InteractionIdentityCoefPB %>%
+  mutate(Conservative.Leave= InteractionIdentityCoefPB$Conservative.Remain + InteractionIdentityCoefPB$Conservative.Leave)
+InteractionIdentityCoefPB<- InteractionIdentityCoefPB %>%
+  mutate(Labour.Leave= InteractionIdentityCoefPB$Conservative.Remain + InteractionIdentityCoefPB$Labour.Leave)
+InteractionIdentityCoefPB<- InteractionIdentityCoefPB %>%
+  mutate(Labour.Remain= InteractionIdentityCoefPB$Conservative.Remain + InteractionIdentityCoefPB$Labour.Remain)
+
+#Obtain standard errors
+
+InteractionIdentityCovPB<- InteractionIdentityPB %>%
+  dplyr::select(Coefficient, Covariance)
+InteractionIdentityCovPB<- InteractionIdentityCovPB %>%
+  tidyr::separate(col=Coefficient, into=c("type", "Coefficient"), sep=":")
+InteractionIdentityCovPB<- InteractionIdentityCovPB %>%
+  tidyr::spread(type, Covariance, convert=T)
+InteractionIdentityCovPB<- InteractionIdentityCovPB %>%
+  dplyr::rename("Conservative.Remain.Cov00"= "Conservative.Remain" ,
+                "Conservative.Leave.Cov01"= "Conservative.Leave" ,
+                "Labour.Leave.Cov02"= "Labour.Leave" ,
+                "Labour.Remain.Cov03" ="Labour.Remain")
+
+InteractionIdentitySEPB<- InteractionIdentityPB %>%
+  dplyr::select(Coefficient, Std..Error)
+InteractionIdentitySEPB<- InteractionIdentitySEPB %>%
+  tidyr::separate(col=Coefficient, into=c("type", "Coefficient"), sep=":")
+InteractionIdentitySEPB<- InteractionIdentitySEPB %>%
+  tidyr::spread(type, Std..Error, convert=T)
+InteractionIdentitySEPB<- InteractionIdentitySEPB %>%
+  dplyr::rename("Conservative.Remain.SE" = "Conservative.Remain" ,
+                "Conservative.Leave.SE" = "Conservative.Leave",
+                "Labour.Leave.SE" ="Labour.Leave",
+                "Labour.Remain.SE" ="Labour.Remain")
+
+InteractionIdentitySE.tidyPB<- left_join(InteractionIdentitySEPB, InteractionIdentityCovPB, by = "Coefficient")
+InteractionIdentitySE.tidyPB[,c(2,4,5)]<-InteractionIdentitySE.tidyPB[,c(2,4,5)]^2
+InteractionIdentitySE.tidyPB[,c(6,8,9)]<-InteractionIdentitySE.tidyPB[,c(6,8,9)]*2
+InteractionIdentitySE.tidyPB<- InteractionIdentitySE.tidyPB %>%
+  mutate(Conservative.Leave.SE=
+           sqrt( InteractionIdentitySE.tidyPB$Conservative.Remain.Cov00 +InteractionIdentitySE.tidyPB$Conservative.Leave.SE + InteractionIdentitySE.tidyPB$Conservative.Leave.Cov01))
+InteractionIdentitySE.tidyPB<- InteractionIdentitySE.tidyPB %>%
+  mutate(Labour.Remain.SE=
+           sqrt(InteractionIdentitySE.tidyPB$Conservative.Remain.Cov00 +InteractionIdentitySE.tidyPB$Labour.Remain.SE + InteractionIdentitySE.tidyPB$Labour.Remain.Cov03))
+InteractionIdentitySE.tidyPB<- InteractionIdentitySE.tidyPB %>%
+  mutate(Labour.Leave.SE=
+           sqrt(InteractionIdentitySE.tidyPB$Conservative.Remain.Cov00 +InteractionIdentitySE.tidyPB$Labour.Leave.SE + InteractionIdentitySE.tidyPB$Labour.Leave.Cov02))
+
+
+
+#Tyding up
+
+InteractionIdentitySE.tidyPB <- InteractionIdentitySE.tidyPB %>%
+  dplyr::select( "Name"=Coefficient, ends_with("SE"))
+InteractionIdentitySE.tidyPB <- InteractionIdentitySE.tidyPB %>%
+  gather(key="level", value = "SE", ends_with("SE"))
+InteractionIdentitySE.tidyPB <- InteractionIdentitySE.tidyPB %>%
+  mutate(level = str_remove(level, ".SE"))
+InteractionIdentitySE.tidyPB <- InteractionIdentitySE.tidyPB %>%
+  unite("Name", c(Name, level))
+InteractionIdentitySE.tidyPB <- InteractionIdentitySE.tidyPB %>%
+  filter(!is.na(SE))
+
+InteractionIdentityCoef.tidyPB <- InteractionIdentityCoefPB %>%
+  dplyr::select( "Name"=Coefficient, everything())
+InteractionIdentityCoef.tidyPB <- InteractionIdentityCoef.tidyPB %>%
+  gather(key="level", value = "Coefficient", Conservative.Leave:Labour.Remain)
+InteractionIdentityCoef.tidyPB <- InteractionIdentityCoef.tidyPB %>%
+  unite("Name", c(Name, level))
+InteractionIdentityCoef.tidyPB <- InteractionIdentityCoef.tidyPB %>%
+  filter(!is.na(Coefficient))
+
+InteractionIdentity.tidyPB <- left_join(InteractionIdentitySE.tidyPB, InteractionIdentityCoef.tidyPB, by = "Name")
+InteractionIdentity.tidyPB <-InteractionIdentity.tidyPB[order(InteractionIdentity.tidyPB$Name),]
+
+
+InteractionIdentity.tidyPB2<- InteractionIdentity.tidyPB %>%
+  tidyr::separate(col=Name, into=c("Name","Party_EU"), sep="_")
+
+InteractionIdentity.tidyPB2<- InteractionIdentity.tidyPB2 %>%
+  mutate(Name = dplyr::recode(Name, "AgeGroup" = "Age", "ethnicity" = "Ethnicity",  "income" = "Income", "HomeStatus"="Home Status"
+                              , "region" = "Region", "religion" = "Religion", "subClass" = "Subjective class", "subFamClass" = "Subjective Family Class"))
+
+
+P.Homophily.5<-ggplot(InteractionIdentity.tidyPB2, aes(x=Name, y=exp(Coefficient), col=Party_EU)) + 
+  geom_errorbar(aes(ymin=exp(Coefficient-2*SE), ymax=exp(Coefficient+2*SE)), width=.2, position = position_dodge(width = 0.5)) +
+  geom_point(shape=19, size=2, position = position_dodge(width = 0.5)) +
+  geom_hline(yintercept=1, linetype="dashed", 
+             size=1, color="grey", alpha=0.5)+
+  theme_clean()+ 
+  scale_color_discrete(name = "EU referendum and General Election", labels = c("Conservative Leave", "Conservative Remain", "Labour Leave", "Labour Remian")) + 
+  theme(plot.title = element_text(hjust = 0.5, face = "plain")) +
+  xlab("") + ylab("")+
+  coord_flip(ylim =c(0,5) )+
+  facet_grid(Name~., scales="free", space = "free")+
+#  scale_y_continuous(trans="log10")+
+  theme(strip.text.y =  element_blank())
+
+```
+
+## Additional Tables and Figures
+
+Levels for each social category are presented in table \@ref(tab:Levels)[^DifferentLevels][^SpecialLevels]. Descriptive statistics for the presented profiles are presented in table \@ref(tab:DescriptiveProf)[^missingvalues]. Descriptive statistics for respondents (without weights) are presented in table \@ref(tab:Descriptive).
+
+[^DifferentLevels]: Levels were defined to be as similar as possible between respondents and profiles. They are identical except for income, where respondents’ income levels are divided into smaller groups. For the analysis, the respondents’ perception of their family’s class was not considered.
+[^SpecialLevels]: For Subjective family class, the matching occurs when the family class of the profile matches the self-categorization of the respondent’s subjective class. Age matching considered a 10-year threshold.  If the difference in ages between respondent and profile was equal or less than 10, then matching would occur.
+[^missingvalues]: Gender and region did not present missing values (they are used for the sampling process). To deal with missing attributes of the voters’ profiles, due to non-response, two strategies were followed. For all attributes, apart from ethnicity and religion, missing values were randomly imputed using STATA to fill in missing values using a multivariate imputation through chained equations (MICE). In other words, I imputed multiple variables iteratively via a sequence of univariate imputation models, one for each imputation variable, with fully conditional specifications of prediction equations. Specifically, multiple linear regression was used for age, logistic regression for home status, subjective class, and subjective family class, and ordinal logistic for education and income. Gender, region, and vote (2017 General Election vote), were used as predictors. For ethnicity and religion, an “unknown” category was included in the experiment as a possible level of these attributes.
+
+```{r LevelsChunk, echo=FALSE,out.width="98%", results='asis'}
+
+options(knitr.kable.NA = '')
+
+  kable(read.csv("Levels.csv", fileEncoding = "UTF-8-BOM"), format="latex", caption = "\\label{tab:Levels}Levels used for each attribute of profiles",  booktabs = T, escape = TRUE) 
+
+
+```
+
+\newpage
+
+```{r,include=FALSE}
+
+library(papeR)
+
+Respondent <- data.experiment2.Second %>%
+  distinct(ID, .keep_all= TRUE) %>% 
+  dplyr::mutate(
+    BESPanel.profile_gross_household = str_remove(BESPanel.profile_gross_household," per year"),
+    BESPanel.profile_gross_household = as.factor(str_remove_all(BESPanel.profile_gross_household,"Â"))
+  )%>%
+  select("Age"=Age.respondent, "Ethnicity"=Ethnicity_Respondent ,"Annual Income"=BESPanel.profile_gross_household ,"Religion"=BESPanel.profile_religion2 ,"Home Status" = BESPanel.profile_house_tenure,"Class"=subjClass.RespondentClass ,"Education"= educ5,"Gender"=profile_gender,"Region" = profile_GOR)
+
+
+ProfileB <- data.experiment2.Second %>%
+  select("Age"=AgeB, "Ethnicity"=EthnicityB ,"Annual_Income"=Anual_Household_IncomeB ,"Religion"=ReligionB ,"Home Status" = Home_statusB,"Class"=Sub_ClassB, "Family Class" = Sub_Fam_ClassB, "Education"= EducationB,"Gender"=GenderB,"Region" = RegionB)
+ProfileA <- data.experiment2.Second %>%
+  select("Age"=AgeA, "Ethnicity"=EthnicityA ,"Annual_Income"=Anual_Household_IncomeA ,"Religion"=ReligionA ,"Home Status" = Home_statusA,"Class"=Sub_ClassA, "Family Class" = Sub_Fam_ClassA, "Education"= EducationA,"Gender"=GenderA,"Region" = RegionA)
+
+Profile <- rbind(ProfileA,ProfileB)
+Profile <- Profile %>%
+  mutate(
+    Ethnicity = dplyr::recode(Ethnicity, "The person's ethnicity is unknown" = "Unknown"),
+    Annual_Income =as.factor(str_remove(string=Annual_Income, pattern="Household income is ")),
+    Religion = dplyr::recode(Religion, "The person's religion is unknown" = "Unknown"),
+    Gender = dplyr::recode(as.factor(Gender),"1" = "Female", "0" = "Male"),
+    Education = dplyr::recode(as.factor(Education),"1" = "University", "0" = "Not University")
+  )
+
+```
+
+
+<!--
+```{r Descriptive, echo=FALSE, results='asis'}
+
+summarytools::define_keywords(duplicates = "", n="", title.dfSummary = "")
+summarytools::dfSummary(Respondent,
+                        max.distinct.values = 25,
+                        display.labels = FALSE,
+          plain.ascii  = FALSE, 
+          style        = "grid", 
+          graph.magnif = 0.75, 
+          valid.col    = FALSE,
+          graph.col = FALSE,
+          na.col = FALSE,
+          varnumbers = FALSE,
+          caption = "\\label{tab:Descriptive}Descriptive statistics for respondents",
+          tmp.img.dir  = "/tmp")
+
+
+```
+
+\newpage
+
+```{r DescriptiveP, echo=FALSE, results='asis'}
+
+summarytools::define_keywords(duplicates = "", n="", title.dfSummary = "")
+summarytools::dfSummary(Profile,
+                        max.distinct.values = 25,
+                        display.labels = FALSE,
+          plain.ascii  = FALSE, 
+          style        = "multiline", 
+          graph.magnif = 0.5, 
+          valid.col    = FALSE,
+          graph.col = FALSE,
+          na.col = FALSE,
+          varnumbers = FALSE,
+          caption = "\\label{tab:DescriptiveProf}Descriptive statistics for profiles",
+          tmp.img.dir  = "/tmp")
+
+
+```
+-->
+
+```{r DescriptiveResp, echo=FALSE, results='asis'}
+
+gtsummary::tbl_summary(Respondent)%>%
+  bold_labels() %>%
+  gtsummary::as_kable_extra(booktabs = TRUE,
+    longtable = TRUE,
+    linesep = "",
+    caption ="\\label{tab:Descriptive}Descriptive statistics for respondents")
+```
+
+```{r DescriptivePro, echo=FALSE, results='asis'}
+
+gtsummary::tbl_summary(Profile)%>%
+  bold_labels() %>%
+  gtsummary::as_kable_extra(booktabs = TRUE,
+    longtable = TRUE,
+    linesep = "",
+    caption ="\\label{tab:DescriptiveProf}Descriptive statistics for profiles")
+```
+
+\newpage
+
+Figure \@ref(fig:linear) presents the results for the analysis using linear model rather than the logistic ordinal version in the article. Patterns remain largely unchanged. 
+
+```{r FirstPlotlinear, fig.width=9,fig.height=8,out.width="\\linewidth",echo=FALSE,fig.cap="\\label{fig:linear}Political commonality by social category. Multivariate linear regression (top) and linear model with one variable at a time (bottom)",fig.show='hold',fig.align='center', fig.pos="H"}
+grid.arrange(P.Homophily.linear.1, P.OneAtTime.linear.1, nrow=2)
+
+```
+
+## Testing robustness of operationalization
+As a sensitivity test, the coefficients of the main analysis are replicated, separating estimates by the relative position of the task (first, second, third, fourth, or fifth). Figure \@ref(fig:Sensitivity-Plot) shows that there is no noticeable pattern depending on the number of tasks.
+
+As another robustness check, I plot the obtained coefficients according to how many levels each characteristic has. This is to assess whether the size of the size of the coefficients is related to the number of levels. I run this analysis for all characteristics, except age (the only characteristic operationalized as continuous). Figure \@ref(fig:Levels-Estimates) shows this comparison. There is no clear pattern which would suggest the size of estimate depends on having more or less levels.
+
+As for age, I replicate the bivariate analysis of age closeness in the paper with different operationlizations. In the original operationalization, respondent and profile are considered to be in the same age category when the difference between the two is less than 10 (years).  Figure \@ref(fig:AgeOp-Plot) shows the estimate for matching age is largely unaffected by the choosing different thresholds.
+
+```{r Levels_vs_Estimates, include=FALSE}
+Levels <- data.frame(
+  term = c("Gender", "Education", "Subjective class",
+           "Subjective family Class", "HomeStatus", "Region", "Religion",
+           "Ethnicity", "Income"),
+  Levels = c(2, 2, 2, 2, 2, 11, 9, 5, 8)
+)
+
+Levels_vs_Estimates<-left_join(Homophily1, Levels, b=c("term")) %>%
+filter(term !="Age") %>%
+  mutate(
+  term = str_replace(as.character(term), "Subjective class", "Class")) %>%
+  mutate(
+  term = str_replace(as.character(term), "Subjective family Class", "Family Class")
+  )
+
+P.Levels_Vs_Estimates <- ggplot(Levels_vs_Estimates, aes(x=as.factor(Levels), y=exp(Estimate))) + 
+  geom_point(shape=19, size=3) +
+  ggrepel::geom_text_repel(aes(y = exp(Estimate), label=term))+
+  theme_clean()+ 
+  theme(plot.title = element_text(hjust = 0.5, face = "plain")) +
+  xlab("Levels") + ylab("Coefficent Estimate")+
+  theme(legend.position = "none")
+```
+
+```{r different_age_op, include=FALSE}
+
+data.experiment2.Second <- data.experiment2.Second %>%
+  mutate(
+    Threshold0A = Closeness.AgeA < 1,
+    Threshold0B = Closeness.AgeB < 1,
+    Threshold5A = Closeness.AgeA < 5,
+    Threshold5B = Closeness.AgeB < 5,
+    Threshold10A = Closeness.AgeA < 10,
+    Threshold10B = Closeness.AgeB < 10,
+    Threshold15A = Closeness.AgeA < 15,
+    Threshold15B = Closeness.AgeB < 15,
+    Threshold20A = Closeness.AgeA < 20,
+    Threshold20B = Closeness.AgeB < 20
+  )
+data.experiment2.Second <- data.experiment2.Second %>%
+  mutate(
+    Threshold_None = case_when(
+      Threshold0A == 1 & Threshold0B == 0 ~ 1,
+      Threshold0A == 0 & Threshold0B == 1 ~ -1,
+      TRUE ~ 0),
+        Threshold_5 = case_when(
+      Threshold5A == 1 & Threshold5B == 0 ~ 1,
+      Threshold5A == 0 & Threshold5B == 1 ~ -1,
+      TRUE ~ 0),
+        Threshold_10 = case_when(
+      Threshold10A == 1 & Threshold10B == 0 ~ 1,
+      Threshold10A == 0 & Threshold10B == 1 ~ -1,
+      TRUE ~ 0),
+        Threshold_15 = case_when(
+      Threshold15A == 1 & Threshold15B == 0 ~ 1,
+      Threshold15A == 0 & Threshold15B == 1 ~ -1,
+      TRUE ~ 0),
+        Threshold_20 = case_when(
+      Threshold20A == 1 & Threshold20B == 0 ~ 1,
+      Threshold20A == 0 & Threshold20B == 1 ~ -1,
+      TRUE ~ 0),
+    )
+    
+
+Age_Op <- function(varind){
+  model<- polr(paste("ChoiceNFactor~",varind),
+                                   weights=data.experiment2.Second$w8, data=data.experiment2.Second, Hess = T )
+  M<-data.frame(coef(summary(model))[1,1])
+  M[1,2]<-data.frame(coef(summary(model))[1,2])
+  rownames(M)[1]<-varind
+  colnames(M)[1]<-"Value"
+  colnames(M)[2]<-"Std. Error"
+  return(M) 
+}
+
+AgeOp<-data.frame(matrix(NA, 5,2))
+rownames(AgeOp)<-c("Threshold_None","Threshold_5","Threshold_10","Threshold_15","Threshold_20")
+
+for (i in rownames(AgeOp)){
+  AgeOp[i,1:2]<-  Age_Op(i)
+}
+colnames(AgeOp)[c(1,2)]<-c("Value","Std.Error")
+AgeOp<- AgeOp %>%
+  tibble::rownames_to_column("Name")
+
+P.AgeOp<-ggplot(AgeOp, aes(x=Name, y=exp(Value))) + 
+  geom_errorbar(aes(ymin=exp(Value-2*Std.Error), ymax=exp(Value+2*Std.Error)), width=.1) +
+  geom_point(shape=19, size=2, alpha=0.7) +
+  geom_hline(yintercept=1, linetype="dashed", 
+             size=1, color="blue", alpha=0.5)+
+  theme_clean()+ 
+  theme(plot.title = element_text(hjust = 0.5, face = "plain")) +
+  xlab("") + ylab("")+
+  coord_flip(ylim = c(-1, 3))+
+  theme(legend.position = "none",
+        strip.text.y = element_blank(), panel.background = element_rect(fill="#00000000"))+
+  facet_grid(fct_relevel(Name, "Threshold_None", "Threshold_5", "Threshold_10", "Threshold_15", "Threshold_20")~., scale="free", space= "free")
+```
+
+```{r Sensitivity-Plot, fig.width=9,fig.height=7,out.width="\\linewidth", echo=FALSE, fig.cap="\\label{fig:Sensitivity-Plot}Sensitivity test",fig.show='hold',fig.align='center', fig.pos="H"}
+
+P.Sensitivity
+```
+
+```{r Levels-Estimates, fig.width=9,fig.height=7,out.width="\\linewidth", echo=FALSE, fig.cap="\\label{fig:Levels-Estimates}Levels versus Estimates of Multivariate Regression (odds ratio)",fig.show='hold',fig.align='center', fig.pos="H"}
+
+P.Levels_Vs_Estimates
+
+```
+
+
+```{r AgeOp-Plot, fig.width=9,fig.height=7,out.width="\\linewidth", echo=FALSE, fig.cap="\\label{fig:AgeOp-Plot}Political commonality for different age operationalization\nBivariate models (odds ratio)",fig.show='hold',fig.align='center', fig.pos="H"}
+
+P.AgeOp
+```
+
+
+## Perceived political commonalities within sub-groups
+
+As an additional analysis, I include an interaction effect for the respondents’ level within each sub-group. Overall the importance of each social category does not show significant variation by level for most sub-groups. While not all of these differences are statistically significant, the data suggest women might be more sensitive to gender similarities than men, those with lower incomes more sensitive to income similarities than those with higher incomes, the non-religious more sensitive to religious similarity than the religious, and the working class more sensitive to class similarity than the middle class. However, caution is needed as some categories are too small to say much about them. That is, the experiment gives little information on the social identities for minority sub-groups. This is the case of less numerous religions and ethnicity.  Grouping Muslim, Methodist, and the Church of Scotland (with matching still within each level, and hence grouping only of the interaction effect) still leads to a large confidence intervals (and a non-significant estimates). This is clearly the case for non-white ethnicity (grouping BAME respondents), as well. In this case, the confidence interval is several times larger than the entire $x$ scale. The measurement design allows me to also evaluate the way class and ethnicity interact, at least for white respondents. Figure \@ref(fig:Polit-by-class) shows the difference in relevance of each social category for white respondents that identify as either working class or middle class. While there are some differences in the importance given to some groupings (such as age, education, and region), I find no evidence that the relevance of ethnicity differs by social class.
+
+Finally, Figure \@ref(fig:PartyEU) presents the results of the combined interaction of 2017 General Election vote and EU referendum vote.
+
+
+
+```{r Polit-by-Level-Chunk, fig.width=9,fig.height=12,out.width="\\linewidth", echo=FALSE, fig.cap="Political commonality for each social category by level of each social category. Multivariate ordinal logistic regression",fig.show='hold',fig.align='center', fig.pos="H"}
+
+P.Homophily.2
+```
+
+
+```{r Polit-by-class, fig.width=10,fig.height=8,out.width="\\linewidth", echo=FALSE, fig.cap="Political commonality by social class among white respondents. Multivariate ordinal logistic regression",fig.show='hold',fig.align='center', fig.pos="H"}
+
+P.Homophily.By.Class
+
+```
+
+```{r Party-EU-Chunk, fig.width=10,fig.height=8,out.width="\\linewidth", echo=FALSE, fig.cap="\\label{fig:PartyEU}Political commonality by both party vote in the 2017 General Election and EU referendum vote",fig.show='hold',fig.align='center', fig.pos="H"}
+P.Homophily.5
+```
+
+
+
+
+
+

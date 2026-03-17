@@ -1,0 +1,105 @@
+#####################
+# load libraries
+# set wd
+# clear global .envir
+#####################
+
+# remove objects
+rm(list=ls())
+# detach all libraries
+detachAllPackages <- function() {
+  basic.packages <- c("package:stats", "package:graphics", "package:grDevices", "package:utils", "package:datasets", "package:methods", "package:base")
+  package.list <- search()[ifelse(unlist(gregexpr("package:", search()))==1, TRUE, FALSE)]
+  package.list <- setdiff(package.list, basic.packages)
+  if (length(package.list)>0)  for (package in package.list) detach(package,  character.only=TRUE)
+}
+detachAllPackages()
+
+# load libraries
+pkgTest <- function(pkg){
+  new.pkg <- pkg[!(pkg %in% installed.packages()[,  "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg,  dependencies = TRUE)
+  sapply(pkg,  require,  character.only = TRUE)
+}
+
+# here is where you load any necessary packages
+# ex: stringr
+# lapply(c("stringr"),  pkgTest)
+
+lapply(c("nnet", "MASS"),  pkgTest)
+
+# set wd for current folder
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+#####################
+# Problem 1
+#####################
+
+# load data
+gdp_data <- read.csv("https://raw.githubusercontent.com/ASDS-TCD/StatsII_2026/main/datasets/gdpChange.csv", stringsAsFactors = F)
+
+# Continuous -> Categorical
+# gdp_data$GDPWdiff >0 "positive", gdp_data$GDPWdiff<0 "negative", gdp_data$GDPWdiff= 0 "no change"
+gdp_data$GDPWdiff <- ifelse(gdp_data$GDPWdiff > 0, "positive", 
+                            ifelse(gdp_data$GDPWdiff < 0, "negative", "no change"))
+
+# (1.1) Unordered multinomial logit
+# change baseline category to "no change"
+gdp_data$GDPWdiff <- factor(gdp_data$GDPWdiff, ordered = F)
+gdp_data$GDPWdiff <- relevel(gdp_data$GDPWdiff, ref="no change")
+
+# run unordered multinomial logit model
+multinom_model <- multinom(GDPWdiff ~ REG + OIL, data = gdp_data)
+summary(multinom_model)
+
+# calculate z-scores and p-values "by hand" (since multinom does not provide p-values)
+z_scores_multi <- summary(multinom_model)$coefficients / summary(multinom_model)$standard.errors
+p_values_multi <- (1 - pnorm(abs(z_scores_multi), 0, 1)) * 2
+p_values_multi
+
+# (1.2) Ordered multinomial logit
+# Set ordered factor correctly: negative < no change < positive
+gdp_data$GDPWdiff_ord <- factor(gdp_data$GDPWdiff, levels = c("negative", "no change", "positive"), ordered = TRUE)
+
+# run ordered multinomial logit model
+ordered_model <- polr(GDPWdiff_ord ~ REG + OIL, data = gdp_data, Hess = TRUE)
+summary(ordered_model)
+
+# calculate p-values for polr model
+coef_table_ord <- coef(summary(ordered_model))
+p_values_ord <- (1 - pnorm(abs(coef_table_ord[, "t value"]), 0, 1)) * 2
+cbind(coef_table_ord, "p value" = p_values_ord)
+
+#####################
+# Problem 2
+#####################
+
+# load data
+mexico_elections <- read.csv("https://raw.githubusercontent.com/ASDS-TCD/StatsII_2026/main/datasets/MexicoMuniData.csv")
+summary(mexico_elections)
+
+# (2a)
+# run Poisson regression (outcome is count)
+poisson_model <- glm(PAN.visits.06 ~ competitive.district + marginality.06 + PAN.governor.06, data=mexico_elections, family = poisson(link="log"))
+summary(poisson_model)
+
+# option #1: use info from summary() output (Wald test for competitive.district)
+summary(poisson_model)$coefficients["competitive.district", ]
+
+# option #2: manually run reduced model & anova (Likelihood Ratio Test)
+poisson_reduced <- glm(PAN.visits.06 ~ marginality.06 + PAN.governor.06, data=mexico_elections, family = poisson(link="log"))
+anova(poisson_reduced, poisson_model, test="LRT")
+
+# (2b)
+# exponentiate coefficients to get Incidence Rate Ratios (IRR) for interpretation
+round(exp(coef(poisson_model)), 3)
+
+# (2c)
+# option #1: predict function
+round(predict(poisson_model, newdata = data.frame(competitive.district=1, marginality.06=0, PAN.governor.06=1), type="response"), 2)
+
+# option #2: predicted count (exp(beta0 + beta1*X1 + ...))
+exp_coefs_count <- exp(coef(poisson_model)[1] + (coef(poisson_model)[2]*1) + (coef(poisson_model)[3]*0) + (coef(poisson_model)[4]*1))
+round(exp_coefs_count, 2)
+

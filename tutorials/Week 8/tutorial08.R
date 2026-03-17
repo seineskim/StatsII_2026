@@ -52,6 +52,8 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 # load data
 workingMoms <- read.table("http://statmath.wu.ac.at/courses/StatsWithR/WorkingMoms.txt", header=T)
 
+workingMoms
+
 # Re-label your outcome, gender, race, and year so they are legible
 # i.e. "SD", "D", "A", "SA" to "Strongly Disagree", "Disagree", "Agree", "Strongly Agree" 
 # 0,1 to "Non-white", "White"
@@ -60,10 +62,19 @@ workingMoms <- read.table("http://statmath.wu.ac.at/courses/StatsWithR/WorkingMo
 # Plot prestige (y-axis) by your outcome (x-axis) by gender ~ year
 
 # a) Perform an ordered (proportional odds) logistic regression
+org.log <- polr(attitude ~ ., data = workingMoms, Hess = TRUE)
+summary(org.log)
 
 # Calculate a p value
+ctable <- coef(summary(ord.log))
+p <- pnorm(abs(ctable[, "t value"]), lower.tail = FALSE,) * 2
+(ctable <- cbind(ctable, "p value" = p))
+
 # Calculate confidence intervals
+(ci <- confint(ord.log))
+
 # Convert to odds ratio
+exp(cbind(OR = coef(ord.log), ci))
 
 # How do we interpret these coefficients?
 

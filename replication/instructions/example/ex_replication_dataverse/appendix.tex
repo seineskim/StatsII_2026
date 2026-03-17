@@ -1,0 +1,428 @@
+\documentclass[]{cupjournal}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{dcolumn} 
+\usepackage{scalefnt} 
+
+ 
+
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\usepackage{abstract}
+\renewcommand{\abstractname}{}    % clear the title
+\renewcommand{\absnamepos}{empty} % originally center
+
+\renewenvironment{abstract}
+ {{%
+    \setlength{\leftmargin}{0mm}
+    \setlength{\rightmargin}{\leftmargin}%
+  }%
+  \relax}
+ {\endlist}
+
+\makeatletter
+\def\@maketitle{%
+  \newpage
+%  \null
+%  \vskip 2em%
+%  \begin{center}%
+  \let \footnote \thanks
+    {\fontsize{18}{20}\selectfont\raggedright  \setlength{\parindent}{0pt} \@title \par}%
+}
+%\fi
+\makeatother
+
+
+
+
+\setcounter{secnumdepth}{0}
+
+\usepackage{longtable,booktabs}
+
+
+ 
+
+
+
+\author{}
+
+
+\date{}
+
+
+
+
+
+
+\newtheorem{hypothesis}{Hypothesis}
+\usepackage{setspace}
+
+\makeatletter
+\@ifpackageloaded{hyperref}{}{%
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+}
+\@ifpackageloaded{color}{
+    \PassOptionsToPackage{usenames,dvipsnames}{color}
+}{%
+    \usepackage[usenames,dvipsnames]{color}
+}
+\makeatother
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+             pdfkeywords = {},  
+            pdftitle={},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+
+\journalname{Submission to B.J.Pol.S.}
+\journalvolume{XX}
+\journalyear{2022}
+\pagecount{X--XX}
+\doinumber{XXX}
+
+\begin{document}
+	
+% \pagenumbering{arabic}% resets `page` counter to 1 
+%    
+
+
+
+
+\vskip 6.5pt
+
+\noindent  \hypertarget{online-appendix}{%
+\section{Online Appendix}\label{online-appendix}}
+
+\hypertarget{additional-tables-and-figures}{%
+\subsection{Additional Tables and Figures}\label{additional-tables-and-figures}}
+
+Levels for each social category are presented in table \ref{tab:Levels}\footnote{Levels were defined to be as similar as possible between respondents and profiles. They are identical except for income, where respondents' income levels are divided into smaller groups. For the analysis, the respondents' perception of their family's class was not considered.}\footnote{For Subjective family class, the matching occurs when the family class of the profile matches the self-categorization of the respondent's subjective class. Age matching considered a 10-year threshold. If the difference in ages between respondent and profile was equal or less than 10, then matching would occur.}. Descriptive statistics for the presented profiles are presented in table \ref{tab:DescriptiveProf}\footnote{Gender and region did not present missing values (they are used for the sampling process). To deal with missing attributes of the voters' profiles, due to non-response, two strategies were followed. For all attributes, apart from ethnicity and religion, missing values were randomly imputed using STATA to fill in missing values using a multivariate imputation through chained equations (MICE). In other words, I imputed multiple variables iteratively via a sequence of univariate imputation models, one for each imputation variable, with fully conditional specifications of prediction equations. Specifically, multiple linear regression was used for age, logistic regression for home status, subjective class, and subjective family class, and ordinal logistic for education and income. Gender, region, and vote (2017 General Election vote), were used as predictors. For ethnicity and religion, an ``unknown'' category was included in the experiment as a possible level of these attributes.}. Descriptive statistics for respondents (without weights) are presented in table \ref{tab:Descriptive}.
+
+\begin{table}
+
+\caption{\label{tab:LevelsChunk}\label{tab:Levels}Levels used for each attribute of profiles}
+\centering
+\begin{tabular}[t]{ll}
+\toprule
+Social.Identity & Category\\
+\midrule
+Gender & Male\\
+ & Female\\
+Ethnicity & He/She is White\\
+ & He/She is ethnically mixed\\
+ & He/She is Asian/Asian British\\
+\addlinespace
+ & He/She is Black\\
+ & The person's ethnicity is unknown\\
+Age & {}[X] years old\\
+Religion & Describes himself/herself as having no religion\\
+ & Describes his/her religion as Christian (no denomination)\\
+\addlinespace
+ & Describes his/her religion as Roman Catholic\\
+ & Describes his/her religion as Church of England/Anglican\\
+ & Describes his/her religion as Presbyterian/Church of Scotland\\
+ & Describes his/her religion as Methodist\\
+ & Describes his/her religion as Hindu\\
+\addlinespace
+ & Describes his/her religion as Islam\\
+ & The person's religion is unknown\\
+Region & Lives in the East Midlands\\
+ & Lives in the East of England\\
+ & Lives in London\\
+\addlinespace
+ & Lives in North East\\
+ & Lives in North West\\
+ & Lives in Scotland\\
+ & Lives in South East\\
+ & Lives in South West\\
+\addlinespace
+ & Lives in Wales\\
+ & Lives in West Midlands\\
+ & Lives in Yorkshire \& Humber\\
+Home status & Owns the home where he/she lives\\
+ & Rents the home where he/she lives\\
+\addlinespace
+Education & Does not have a university degree\\
+ & Has a university degree\\
+Annual household income & Household Income is less than £5,199 per year\\
+ & Household Income is between £5,200 and £15,599 per year\\
+ & Household income is between £15,600 and £25,999 per year\\
+\addlinespace
+ & Household income is between £26,000 and £36,399 per year\\
+ & Household income is between £36,400 and £44,999 per year\\
+ & Household income is between £45,000 and £59,999 per year\\
+ & Household income is between £60,000 and £99,999 per year\\
+ & Household income is greater than £100,000 per year\\
+\addlinespace
+Subjective class & Describes himself/herself as Middle class\\
+ & Describes himself/herself as Working class\\
+Subjective family class & Describes his/her family when growing up as Middle class\\
+ & Describes his/her family when growing up as Working class\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\newpage
+
+\begin{longtable}[t]{lc}
+\caption{\label{tab:DescriptiveResp}\label{tab:Descriptive}Descriptive statistics for respondents}\\
+\toprule
+\textbf{Characteristic} & \textbf{N = 1,656}\\
+\midrule
+\textbf{Age} & 52 (20, 90)\\
+\textbf{Ethnicity} & \\
+\hspace{1em}Asian & 56 (3.5\%)\\
+\hspace{1em}Black & 9 (0.6\%)\\
+\hspace{1em}Mixed & 20 (1.2\%)\\
+\hspace{1em}White & 1,529 (95\%)\\
+\hspace{1em}Unknown & 42\\
+\textbf{Annual Income} & \\
+\hspace{1em}£10,000 to £14,999 & 139 (9.4\%)\\
+\hspace{1em}£100,000 to £149,999 & 17 (1.1\%)\\
+\hspace{1em}£15,000 to £19,999 & 113 (7.6\%)\\
+\hspace{1em}£150,000 and over & 9 (0.6\%)\\
+\hspace{1em}£20,000 to £24,999 & 120 (8.1\%)\\
+\hspace{1em}£25,000 to £29,999 & 122 (8.2\%)\\
+\hspace{1em}£30,000 to £34,999 & 94 (6.4\%)\\
+\hspace{1em}£35,000 to £39,999 & 81 (5.5\%)\\
+\hspace{1em}£40,000 to £44,999 & 77 (5.2\%)\\
+\hspace{1em}£45,000 to £49,999 & 53 (3.6\%)\\
+\hspace{1em}£5,000 to £9,999 & 86 (5.8\%)\\
+\hspace{1em}£50,000 to £59,999 & 61 (4.1\%)\\
+\hspace{1em}£60,000 to £69,999 & 22 (1.5\%)\\
+\hspace{1em}£70,000 to £99,999 & 46 (3.1\%)\\
+\hspace{1em}Don't know & 112 (7.6\%)\\
+\hspace{1em}Prefer not to answer & 278 (19\%)\\
+\hspace{1em}under £5,000 & 49 (3.3\%)\\
+\hspace{1em}Unknown & 177\\
+\textbf{Religion} & \\
+\hspace{1em}Church of England/Anglican/Episcopal & 379 (31\%)\\
+\hspace{1em}Hinduism & 11 (0.9\%)\\
+\hspace{1em}Islam & 27 (2.2\%)\\
+\hspace{1em}Methodist & 26 (2.1\%)\\
+\hspace{1em}No religion & 648 (53\%)\\
+\hspace{1em}Presbyterian/Church of Scotland & 35 (2.9\%)\\
+\hspace{1em}Roman Catholic & 96 (7.9\%)\\
+\hspace{1em}Unknown & 434\\
+\textbf{Home Status} & \\
+\hspace{1em}Own outright & 494 (37\%)\\
+\hspace{1em}Own with a mortgage & 402 (30\%)\\
+\hspace{1em}Own (part-own) through shared ownership scheme (i.e. pay part mortgage, part rent) & 11 (0.8\%)\\
+\hspace{1em}Rent from a private landlord & 168 (13\%)\\
+\hspace{1em}Rent from my local authority & 55 (4.1\%)\\
+\hspace{1em}Rent from a housing association & 95 (7.1\%)\\
+\hspace{1em}Neither I live with my parents, family or friends but pay some rent to them & 42 (3.1\%)\\
+\hspace{1em}Neither I live rent-free with my parents, family or friends & 51 (3.8\%)\\
+\hspace{1em}Other & 23 (1.7\%)\\
+\hspace{1em}Don't know & 0 (0\%)\\
+\hspace{1em}Unknown & 315\\
+\textbf{Class} & \\
+\hspace{1em}No & 424 (26\%)\\
+\hspace{1em}Yes, middle class & 413 (25\%)\\
+\hspace{1em}Yes, working class & 689 (42\%)\\
+\hspace{1em}Yes, other & 29 (1.8\%)\\
+\hspace{1em}Skipped & 0 (0\%)\\
+\hspace{1em}Not Asked & 0 (0\%)\\
+\hspace{1em}Don't know & 91 (5.5\%)\\
+\hspace{1em}Unknown & 10\\
+\textbf{Education} & \\
+\hspace{1em}None & 117 (7.1\%)\\
+\hspace{1em}Level 1 & 52 (3.1\%)\\
+\hspace{1em}Level 2 & 333 (20\%)\\
+\hspace{1em}Level 3 & 313 (19\%)\\
+\hspace{1em}Level 4 & 131 (7.9\%)\\
+\hspace{1em}Level 5 and above & 459 (28\%)\\
+\hspace{1em}Other & 251 (15\%)\\
+\textbf{Gender} & \\
+\hspace{1em}Male & 749 (45\%)\\
+\hspace{1em}Female & 907 (55\%)\\
+\textbf{Region} & \\
+\hspace{1em}North East & 60 (3.6\%)\\
+\hspace{1em}North West & 191 (12\%)\\
+\hspace{1em}Yorkshire and the Humber & 154 (9.3\%)\\
+\hspace{1em}East Midlands & 117 (7.1\%)\\
+\hspace{1em}West Midlands & 148 (8.9\%)\\
+\hspace{1em}East of England & 158 (9.5\%)\\
+\hspace{1em}London & 183 (11\%)\\
+\hspace{1em}South East & 251 (15\%)\\
+\hspace{1em}South West & 163 (9.8\%)\\
+\hspace{1em}Wales & 87 (5.3\%)\\
+\hspace{1em}Scotland & 144 (8.7\%)\\
+\hspace{1em}Northern Ireland & 0 (0\%)\\
+\hspace{1em}Non UK \& Invalid & 0 (0\%)\\
+\bottomrule
+\multicolumn{2}{l}{\rule{0pt}{1em}\textsuperscript{1} Median (0\%, 100\%); n (\%)}\\
+\end{longtable}
+
+\begin{longtable}[t]{lc}
+\caption{\label{tab:DescriptivePro}\label{tab:DescriptiveProf}Descriptive statistics for profiles}\\
+\toprule
+\textbf{Characteristic} & \textbf{N = 16,560}\\
+\midrule
+\textbf{Age} & 49 (34, 64)\\
+\textbf{Ethnicity} & \\
+\hspace{1em}Asian/Asian British & 1,055 (6.4\%)\\
+\hspace{1em}Black & 295 (1.8\%)\\
+\hspace{1em}Mixed & 259 (1.6\%)\\
+\hspace{1em}White & 13,967 (84\%)\\
+\hspace{1em}Unknown & 984 (5.9\%)\\
+\textbf{Annual\_Income} & \\
+\hspace{1em}between £15,600 and £25,999 & 3,286 (20\%)\\
+\hspace{1em}between £26,000 and £36,399 & 2,876 (17\%)\\
+\hspace{1em}between £36,400 and £44,999 & 1,668 (10\%)\\
+\hspace{1em}between £45,000 and £59,999 & 1,967 (12\%)\\
+\hspace{1em}between £5,200 and £15,599 & 3,053 (18\%)\\
+\hspace{1em}between £60,000 and £99,999 & 2,262 (14\%)\\
+\hspace{1em}greater than £100,000 & 694 (4.2\%)\\
+\hspace{1em}less than £5,199 & 754 (4.6\%)\\
+\textbf{Religion} & \\
+\hspace{1em}Roman Catholic & 3,734 (23\%)\\
+\hspace{1em}Church of England/Anglican/Episcopal & 2,629 (16\%)\\
+\hspace{1em}Hindu & 246 (1.5\%)\\
+\hspace{1em}Islam & 912 (5.5\%)\\
+\hspace{1em}Methodist & 266 (1.6\%)\\
+\hspace{1em}Presbyterian/Church of Scotland & 202 (1.2\%)\\
+\hspace{1em}No religion & 8,016 (48\%)\\
+\hspace{1em}Unknown & 555 (3.4\%)\\
+\textbf{Home Status} & \\
+\hspace{1em}Owns home & 11,522 (70\%)\\
+\hspace{1em}Rents home & 5,038 (30\%)\\
+\textbf{Class} & \\
+\hspace{1em}Middle class & 5,699 (34\%)\\
+\hspace{1em}Working class & 10,861 (66\%)\\
+\textbf{Family Class} & \\
+\hspace{1em}Family middle class & 4,486 (27\%)\\
+\hspace{1em}Family working class & 12,074 (73\%)\\
+\textbf{Education} & \\
+\hspace{1em}Not University & 10,780 (65\%)\\
+\hspace{1em}University & 5,780 (35\%)\\
+\textbf{Gender} & \\
+\hspace{1em}Male & 8,111 (49\%)\\
+\hspace{1em}Female & 8,449 (51\%)\\
+\textbf{Region} & \\
+\hspace{1em}Lives in London & 1,907 (12\%)\\
+\hspace{1em}Lives in North East & 825 (5.0\%)\\
+\hspace{1em}Lives in North West & 1,913 (12\%)\\
+\hspace{1em}Lives in Scotland & 1,508 (9.1\%)\\
+\hspace{1em}Lives in South East & 2,317 (14\%)\\
+\hspace{1em}Lives in South West & 1,474 (8.9\%)\\
+\hspace{1em}Lives in the East Midlands & 1,229 (7.4\%)\\
+\hspace{1em}Lives in the East of England & 1,543 (9.3\%)\\
+\hspace{1em}Lives in Wales & 806 (4.9\%)\\
+\hspace{1em}Lives in West Midlands & 1,578 (9.5\%)\\
+\hspace{1em}Lives in Yorkshire \& Humber & 1,460 (8.8\%)\\
+\bottomrule
+\multicolumn{2}{l}{\rule{0pt}{1em}\textsuperscript{1} Median (IQR); n (\%)}\\
+\end{longtable}
+
+\newpage
+
+Figure \ref{fig:linear} presents the results for the analysis using linear model rather than the logistic ordinal version in the article. Patterns remain largely unchanged.
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=\linewidth]{appendix_files/figure-latex/FirstPlotlinear-1} 
+
+}
+
+\caption{\label{fig:linear}Political commonality by social category. Multivariate linear regression (top) and linear model with one variable at a time (bottom)}\label{fig:FirstPlotlinear}
+\end{figure}
+
+\hypertarget{testing-robustness-of-operationalization}{%
+\subsection{Testing robustness of operationalization}\label{testing-robustness-of-operationalization}}
+
+As a sensitivity test, the coefficients of the main analysis are replicated, separating estimates by the relative position of the task (first, second, third, fourth, or fifth). Figure \ref{fig:Sensitivity-Plot} shows that there is no noticeable pattern depending on the number of tasks.
+
+As another robustness check, I plot the obtained coefficients according to how many levels each characteristic has. This is to assess whether the size of the size of the coefficients is related to the number of levels. I run this analysis for all characteristics, except age (the only characteristic operationalized as continuous). Figure \ref{fig:Levels-Estimates} shows this comparison. There is no clear pattern which would suggest the size of estimate depends on having more or less levels.
+
+As for age, I replicate the bivariate analysis of age closeness in the paper with different operationlizations. In the original operationalization, respondent and profile are considered to be in the same age category when the difference between the two is less than 10 (years). Figure \ref{fig:AgeOp-Plot} shows the estimate for matching age is largely unaffected by the choosing different thresholds.
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=\linewidth]{appendix_files/figure-latex/Sensitivity-Plot-1} 
+
+}
+
+\caption{\label{fig:Sensitivity-Plot}Sensitivity test}\label{fig:Sensitivity-Plot}
+\end{figure}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=\linewidth]{appendix_files/figure-latex/Levels-Estimates-1} 
+
+}
+
+\caption{\label{fig:Levels-Estimates}Levels versus Estimates of Multivariate Regression (odds ratio)}\label{fig:Levels-Estimates}
+\end{figure}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=\linewidth]{appendix_files/figure-latex/AgeOp-Plot-1} 
+
+}
+
+\caption{\label{fig:AgeOp-Plot}Political commonality for different age operationalization
+Bivariate models (odds ratio)}\label{fig:AgeOp-Plot}
+\end{figure}
+
+\hypertarget{perceived-political-commonalities-within-sub-groups}{%
+\subsection{Perceived political commonalities within sub-groups}\label{perceived-political-commonalities-within-sub-groups}}
+
+As an additional analysis, I include an interaction effect for the respondents' level within each sub-group. Overall the importance of each social category does not show significant variation by level for most sub-groups. While not all of these differences are statistically significant, the data suggest women might be more sensitive to gender similarities than men, those with lower incomes more sensitive to income similarities than those with higher incomes, the non-religious more sensitive to religious similarity than the religious, and the working class more sensitive to class similarity than the middle class. However, caution is needed as some categories are too small to say much about them. That is, the experiment gives little information on the social identities for minority sub-groups. This is the case of less numerous religions and ethnicity. Grouping Muslim, Methodist, and the Church of Scotland (with matching still within each level, and hence grouping only of the interaction effect) still leads to a large confidence intervals (and a non-significant estimates). This is clearly the case for non-white ethnicity (grouping BAME respondents), as well. In this case, the confidence interval is several times larger than the entire \(x\) scale. The measurement design allows me to also evaluate the way class and ethnicity interact, at least for white respondents. Figure \ref{fig:Polit-by-class} shows the difference in relevance of each social category for white respondents that identify as either working class or middle class. While there are some differences in the importance given to some groupings (such as age, education, and region), I find no evidence that the relevance of ethnicity differs by social class.
+
+Finally, Figure \ref{fig:PartyEU} presents the results of the combined interaction of 2017 General Election vote and EU referendum vote.
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=\linewidth]{appendix_files/figure-latex/Polit-by-Level-Chunk-1} 
+
+}
+
+\caption{Political commonality for each social category by level of each social category. Multivariate ordinal logistic regression}\label{fig:Polit-by-Level-Chunk}
+\end{figure}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=\linewidth]{appendix_files/figure-latex/Polit-by-class-1} 
+
+}
+
+\caption{Political commonality by social class among white respondents. Multivariate ordinal logistic regression}\label{fig:Polit-by-class}
+\end{figure}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=\linewidth]{appendix_files/figure-latex/Party-EU-Chunk-1} 
+
+}
+
+\caption{\label{fig:PartyEU}Political commonality by both party vote in the 2017 General Election and EU referendum vote}\label{fig:Party-EU-Chunk}
+\end{figure}
+
+\newpage
+\singlespacing 
+\end{document}

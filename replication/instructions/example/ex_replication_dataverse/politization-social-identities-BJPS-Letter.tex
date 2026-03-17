@@ -1,0 +1,403 @@
+\documentclass[a4paper]{cupjournal}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{dcolumn} 
+\usepackage{scalefnt} 
+
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newenvironment{CSLReferences}%
+  {}%
+  {\par}
+ 
+
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\usepackage{abstract}
+\renewcommand{\abstractname}{}    % clear the title
+\renewcommand{\absnamepos}{empty} % originally center
+
+\renewenvironment{abstract}
+ {{%
+    \setlength{\leftmargin}{0mm}
+    \setlength{\rightmargin}{\leftmargin}%
+  }%
+  \relax}
+ {\endlist}
+
+\makeatletter
+\def\@maketitle{%
+  \newpage
+%  \null
+%  \vskip 2em%
+%  \begin{center}%
+  \let \footnote \thanks
+    {\fontsize{18}{20}\selectfont\raggedright  \setlength{\parindent}{0pt} \@title \par}%
+}
+%\fi
+\makeatother
+
+
+
+
+\setcounter{secnumdepth}{0}
+
+\usepackage{longtable,booktabs}
+
+
+\title{Class, ethnicity, age, or education. What characteristics determine citizens' sense of political commonality? \thanks{\textbf{Corresponding author}: \href{mailto:n.titelman@lse.ac.uk}{\nolinkurl{n.titelman@lse.ac.uk}}}  }
+ 
+
+
+
+\author{\Large Noam Titelman\vspace{0.05in} \newline\normalsize\emph{}   \and \Large \vspace{0.05in} \newline\normalsize\emph{London School of Economics and Political Science}  }
+
+
+\date{}
+
+
+
+
+
+
+\newtheorem{hypothesis}{Hypothesis}
+\usepackage{setspace}
+
+\makeatletter
+\@ifpackageloaded{hyperref}{}{%
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+}
+\@ifpackageloaded{color}{
+    \PassOptionsToPackage{usenames,dvipsnames}{color}
+}{%
+    \usepackage[usenames,dvipsnames]{color}
+}
+\makeatother
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={Noam Titelman () and  (London School of Economics and Political Science)},
+             pdfkeywords = {Social Identity, Class, Ethnicity, British Politics},  
+            pdftitle={Class, ethnicity, age, or education. What characteristics determine citizens' sense of political commonality?},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+
+\journalname{Submission to B.J.Pol.S.}
+\journalvolume{XX}
+\journalyear{2022}
+\pagecount{X--XX}
+\doinumber{XXX}
+
+\begin{document}
+	
+% \pagenumbering{arabic}% resets `page` counter to 1 
+%    
+
+% \maketitle
+
+{% \usefont{T1}{pnc}{m}{n}
+\setlength{\parindent}{0pt}
+\thispagestyle{plain}
+{\fontsize{18}{20}\selectfont\raggedright 
+\maketitle  % title \par  
+
+}
+
+{
+   \vskip 13.5pt\relax \normalsize\fontsize{11}{12} 
+\textbf{Noam Titelman} \hskip 15pt \emph{\small }   \par \textbf{} \hskip 15pt \emph{\small London School of Economics and Political Science}   
+
+}
+
+}
+
+
+
+
+
+
+
+\begin{abstract}
+
+    \hbox{\vrule height .2pt width 39.14pc}
+
+    \vskip 8.5pt % \small 
+
+\noindent We know from election studies which demographic characteristics best predict vote choice, but we know far less about how citizens perceive their similarity to one another in terms of these characteristics. Previous research suggests such perceptions may be crucial for the politicization of social identities and the emergence of political identities. I present results from a novel measurement strategy where respondents are presented with profiles of two fellow citizens, including several demographic attributes. Respondents are asked which of the two they perceive themselves to have more in common, in terms of politics. Respondents' implicit trade-off of different demographic similarities allows me to measure the relative strength of their perceived political similarities. I find an important role for shared ethnicity, noticeably surpassing shared social class, age, and education. Finally, I find that shared ethnicity receives substantially more weight among 2017 Conservative and 2016 Leave voters than among Labour and Remain voters.
+
+
+\vskip 8.5pt \noindent \emph{Keywords}: Social Identity, Class, Ethnicity, British Politics \par
+
+    \hbox{\vrule height .2pt width 39.14pc}
+
+
+
+\end{abstract}
+
+
+\vskip 6.5pt
+
+\noindent \doublespacing \hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+Electoral results are often analysed in terms of the demographic attributes of each party's electorate. Frequently, these analyses seek to show more than mere descriptive associations. One mechanism by which these associations could arise is through the politicization of social identities (e.g. Campbell et al. 1960; Huddy 2001). Social identity theory (Tajfel 1974; Tajfel et al. 1979) argues that a person's demographic attributes and the feelings that person has towards these categories may provide an essential part of that individual's identity.
+However, analysing the associations between demographic groups and voting does not reveal the relative importance of the corresponding social identities to politics. How can we determine which social identities are more important for how people perceive political commonality between themselves and other citizens?
+
+This research study makes novel contributions to our understanding of social identities in politics and to the methodology with which we study them. Respondents for this study were taken from the pool of regular respondents in the British Election Study (BES) on-line panel. All demographic variables for the respondents to the experiment were thus measured in surveys completed before the experiment. The experiment consisted in presenting two profiles with 10 demographic attributes. Respondents were then asked to choose, in terms of politics, with which of the two they perceived they had more in common. These two profiles were themselves sampled from the British Election Study, ensuring that the two citizen profiles which respondents were assessing for relative political commonality are representative of the actual characteristics of British citizens across the full experiment. This method relates to traditional conjoint experiments, but Instead of a distribution where profile attributes are independently randomised I have randomly selected complete profiles following their actual distribution in the population.
+
+The study introduces a new approach to the measurement of social identities and their politicization. The previous reliance on the association between demographic attributes and electoral results to assess the relevance of social identities confounds the fact that group membership is different from social identity and some social identities may be relevant for the population's perception on political commonalities even if they are not being mobilized by the political parties, while other social identities may predict voting behaviour well without playing an important role in individuals' perceptions of politics. This approach re-orients analysis of social identity in politics away from asking which demographic characteristics most strongly predict shared behaviour (e.g.~voting) towards asking which social identities cause people to see that their fellow citizens as potential allies in politics.
+
+\hypertarget{social-and-political-identity}{%
+\section{Social and Political Identity}\label{social-and-political-identity}}
+
+The tradition of social identity theory and inter group relations was established by Tajfel (1974) and further developed in Tajfel et al. (1979). This theory argues that a person's social category (such as class, religion, or ethnicity) and the feelings that person has towards that category provide a ``self-definition that is a part of the self- concept. People have a repertoire of such discrete category memberships that vary in relative overall importance in the self- concept'' (Hogg, Terry, and White 1995, 259). This original perspective of social identity is complemented by the notion of ``self-categorization'' (Turner et al. 1987). The self-categorization element of social identity is the cognitive process by which a person highlights differences from out-group individuals and similarities to in-group individuals. In other words, group identity emerges as a feeling of similarity to the ``typical member'' or prototypical group member (Huddy 2013).
+
+Membership in a social group is a necessary but not sufficient condition for the emergence of social identity, and social identity is a necessary but not sufficient condition for political identity. Huddy (2013) defines political identity as ``a social identity with political relevance'' (739).
+Following this definition, for group membership to become a political identity two elements must be present. First, the presence of salient social identity is required (Huddy 2001, 2013) and, second, this identity must rest on ``political content'' (Huddy 2013, 739).
+
+One implication of this definition is that, as Egan (2020) has argued, these identities are not merely antecedent to political attitudes. Rather political contexts can affect them, especially through social sorting (Mason 2015, 2018). The aim of this study is to operationalize an analysis of this phenomenon by identifying which social identities are more relevant in terms of perceived political commonalities.
+
+When social identities are measured directly comparisons of the relative salience of these identities tend to be difficult. This is partly a methodological issue, as many studies of competing social identities rely on direct one item questions, without measuring relative strength (e.g. Evans and Mellon 2016). Social identity measurements in nationally representative surveys have been criticized, among other reasons, for not adequately measuring intensity of identification (Huddy 2013; Wong 2010), therefore making comparisons between different identities virtually impossible. On the other hand, more complex multi-item measurements, with identity scales, are typically designed for specific social groups, making comparisons across multiple dimensions of identity hard. For example, even the widely used Multigroup Ethnic Identity Measure (MEIM), developed by Phinney (1992) is designed for comparisons only among individuals and groups in ethnic terms.
+
+\hypertarget{social-identities-in-britain}{%
+\subsection{Social Identities in Britain}\label{social-identities-in-britain}}
+
+A persistent debate about competing social identities in western democracies has revolved around the importance of social class in politics. A long line of research has shown a historical relationship between social class membership and voting behaviour in the Anglo-American context (e.g. Alford 1967) and in Europe (e.g. Houtman, Achterberg, and Derks 2009; Jansen, Evans, and Graaf 2013). Additionally, as several studies have focused their attention on other characteristics of the European population that may explain electoral behaviour, the importance of ethnicity (e.g. Zick, Pettigrew, and Wagner 2008), age (e.g. Maggini 2016) and education (e.g. Ford and Jennings 2020) in predicting political attitudes and behaviours have become increasingly prominent. Some have claimed that these new demographic patterns are the result of new emerging social cleavages that have replaces the old class divide (Marks et al. 2017; Stubager 2010).
+
+In this broader context I have focused on the British case because of its interest as an example of the general trend described above. The relevance of class for political outcomes and party identity in the UK has a long tradition (Butler and Stokes 1969; Butler and Stokes 1971). However, even if class has maintained its status as an important social identity in Britain (e.g. Evans and Tilley 2017), several studies have shown it has become less salient in politics. Some see this as owing to changes through which the parties have become less aligned with social class identity without social class identity being less salient to individuals (e.g. Evans and Tilley 2017; Heath 2015). This study, by focusing on respondents' sense of commonality with other people, sets aside the question of whether the parties are providing a social class salient choice, and focuses on whether citizens feel their social class is important.
+
+Additionally, this study was carried out in the context of the Brexit debates, following the EU referendum of 2016. Specifically, the data for the study was collected shortly after the European Parliament elections of May 2019, in which the Brexit party became the largest party with 29 seats. Brexit and the debates it sparked may have brought upon the emergence of new political identities and ``these new identities reflect pre-existing but less politicized social divisions\ldots{}'' (Hobolt, Leeper, and Tilley 2020, 3). For example, Sobolewska and Ford (2020) find ethnocentrism may have played a pivotal role in the Brexit vote. This perspective on the shifting importance of social identities for political behaviour in Britain is also strengthened by the fact that in the 2017 General Election age replaced class as main predictor of party choice (Sloam and Henn 2019).
+
+\hypertarget{data-and-methods}{%
+\section{Data and Methods}\label{data-and-methods}}
+
+This paper presents a novel measurement strategy for assessing the relative salience of social identities for perceived political commonalities. Respondents were presented with two randomly selected profiles of fellow citizens, characterized with 10 demographic categories frequently considered as determinants of voting behaviour. Respondents were then asked to assess, in terms of politics, with which of the two profiles they perceived they had more in common. An example of how this appeared to respondents can be seen in Figure \ref{fig:PromptChunk}.
+
+The format of previous studies on the political relevance of social identities encourages respondents to think of demographic characteristics one at a time. In contrast, this design requires respondents to evaluate each attribute in the context of many at once, which means that there is an implicit trade-off between the different attributes. Additionally, because the task requires respondents to evaluate profiles with several attributes simultaneously, there is less risk of social desirability bias or conflating identity with sympathy. The fact that the prompt explicitly asks for political commonalities, rather than general closeness, comes from the definition of political identity as a ``social identity with political relevance'' (Huddy 2013, 739).
+
+The profiles of characteristics presented to respondents were profiles of real people who were randomly selected from the respondents of the 2017 post-election BES. The randomization was carried out in a probability proportional to size (PPS) manner, with the probability of sampling proportional to the 2017 General Election turn-out weights. This meant that the profiles presented to respondents followed the distribution of British voters. This is important because it ensures that not only the distribution of individual characteristics is realistic, but also the (joint) distribution of combinations of characteristics is realistic. If an arbitrary distribution had been used, the relative magnitude of the coefficients on different similarities could have reflected those arbitrary aspects of how different characteristics were put together in the experiment. The experiment, as designed, asks the question of how people choose which of two people is closer to them politically, where those two people are sampled from Great Britain's voting population rather than from a distribution made up by the experimenter.
+
+This method is closely related to traditional conjoint experiments (Bansak et al. 2020), however, instead of a distribution where profile attributes are independently randomised, I have randomly selected complete profiles following their actual distribution in the population. Because the estimates derived from conjoint experiment are obtained averaging over the treatment distribution, using this external benchmark for the distribution helps with external validity of estimates but implies I cannot use non-parametric identification of causal effects of individual attributes, introducing model dependence in the analysis of the data (De la Cuesta, Egami, and Imai 2019).
+
+The profiles' characteristics included in the study were: gender, age, religion, region, home status, education, annual household income, subjective class, and subjective family class. The possible levels for each characteristics are detailed in Table 1 in the online appendix. The experiment was fielded by \emph{YouGov} between June and August 2019. The prompt was presented five times per respondent with different profiles each time. The order in which the attributes were listed was randomized per respondent. 1656 respondents from Great Britain were recruited for the experiment (8,280 responses). In the analyses, I use sample weights provided by \emph{YouGov} that make the data representative of the British population on standard demographic and past vote variables\footnote{Further details on the levels of each category and their distribution among repondents and experiment profiles, are given in the online appendix.}.
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.98\linewidth]{Prompt} 
+
+}
+
+\caption{Survey prompt with example profiles.}\label{fig:PromptChunk}
+\end{figure}
+
+To analyse the results of the experiment, the information on the respondents' self-categorization is combined with that of the profiles presented to them and their choices. The analysis seeks to assess the probability of a respondent choosing one profile if that profile shares an attribute with the respondent, while the other alternative profile does not.
+
+To perform this analysis, two dummy variables, \(m_{Aij}\) and \(m_{Bij}\), are created to reflect whether the respondent's self-categorization on task \(i\), matches profile \(A\) on attribute \(j\) and whether it matches profile \(B\) on the same attribute \(j\) (two dummy values per iteration per attribute). The difference between the two dummy variables is the explanatory variable of interest, \(d_{ij} = m_{Aij}-m_{Bij}\). If, for task \(i\), the two profiles present the same levels as the respondent on attribute \(j\), or neither of them do, \(d_{ij}\) will be zero. If the matching attribute is only 1 in the first person (``Person A''), then \(d_{ij}\) will have the value of positive 1. If the matching attribute is only 1 in the second person (``Person B''), then \(d_{ij}\) will have the negative value of -1. The choice of the respondent for task \(i\), the outcome of interest, \(c_i\), is then coded in an equivalent way, with 1 meaning the respondent chose Person A, -1 meaning that the respondent chose Person B, and 0 meaning the person chose ``not sure''. The reason the data is coded this way is that this means that matches with A and B are treated symmetrically, and each coefficient describes the effect of moving from no match to match for a single characteristic, holding the other attributes and the other profile constant.
+
+With these variables, the following subsections will examine how important is every \(d_{ij}\), for every attribute \(j\) in explaining the respondents' choice (\(c_i\)). I will then examine if this relative importance of the attributes varies by respondents' past political behaviour (electoral choice in the 2017 General Election and the EU referendum).
+
+\newpage
+
+\hypertarget{relative-importance-for-political-commonality-of-each-social-category}{%
+\section{Relative importance for political commonality of each social category}\label{relative-importance-for-political-commonality-of-each-social-category}}
+
+The results of regressing respondents' choice explained by the relative matching attributes in an ordinal logistic model \footnote{The results are largely unchanged with a linear model as can be seen in Figure 6 in the online appendix.} are presented in Figure \ref{fig:FirstPlot}. The coefficients correspond to how strongly a respondent matching a profile on a given attribute predicts the respondent choosing that profile as having more political commonality with herself.
+All the matching coefficients are statistically significant at the 95\% confidence level. This confirms that, on average, people are more likely to feel political commonality with people who share their social identity categories, for all the characteristics in the study.
+
+Because the levels of the different attributes are correlated, both among respondents and among profiles, the matching variables are correlated. Thus, the inclusion of several economic variables could dilute the strength of class matching when compared to ethnicity, due to collinearity. To confirm how robust the estimates a regression model including all attributes and ten regression models including each single attribute are presented in Figure \ref{fig:FirstPlot}, which shows that the described trends remain largely unchanged.
+
+Overall, this first analysis points to the importance of ethnicity for political commonality. Age, education, and matching subjective class, while playing some role in perceived political commonality, seem to do so to a lesser extent. The same is true for the different attributes related to class, such as home status, income, and subjective family class.
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=\linewidth]{politization-social-identities-BJPS-Letter_files/figure-latex/FirstPlot-1} 
+
+}
+
+\caption{Percieved political commonality by social identity. Multivariate regression (top) and one variable at a time (bottom)}\label{fig:FirstPlot}
+\end{figure}
+
+\hypertarget{social-identity-perceived-political-commonality-and-vote-choice}{%
+\section{Social identity, perceived political commonality, and vote choice}\label{social-identity-perceived-political-commonality-and-vote-choice}}
+
+Does perceived political commonality depend on different attributes for Conservative versus Labour voters, or Leave versus Remain voters? The relationship between perceived political commonality and vote choice is analysed by including the corresponding interaction effects in the regression model.
+As Figure \ref{fig:Polit-by-PartyandEU-Chunk} shows, the importance of ethnicity differs by party and referendum vote to a degree unmatched by any other attribute. Specifically, Conservative and Leave voters give significantly more weight to this aspect for perceived political commonality, compared to Labour and Remain voters.
+These findings suggest that ethnicity might have become a politicized social identity, and that the demographic association between the ethnic self-categorization of a respondent and vote choice is not the result of mere policy preferences. In the online appendix, Figure 7 shows the interactive effect of party vote and EU referendum vote. Labour voters who voted Leave give a similar weight to ethnicity to both Conservative Leave and Remain voters. While the large confidence interval warrants caution, these patterns are consistent with Hobolt, Leeper, and Tilley (2020) findings of Brexit politicizing social identities, such as ethnicity, that escape the traditional party divisions.
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=\linewidth]{politization-social-identities-BJPS-Letter_files/figure-latex/Polit-by-PartyandEU-Chunk-1} 
+
+}
+
+\caption{Political commonality by Party vote in the 2017 General Election (top) and by 2016 EU referendum vote (bottom). Multivariate ordinal logistic regression}\label{fig:Polit-by-PartyandEU-Chunk}
+\end{figure}
+
+\newpage
+
+\hypertarget{conclusion}{%
+\section{Conclusion}\label{conclusion}}
+
+This study presents a novel measurement strategy of the relationship between social identities, and the perception of political commonalities. By using this measurement strategy, I can compare the relative strength of different social identities in the population from the perspective of how citizens perceive one another politically rather than from their tendency to vote together. Instead of relying on electoral predictors or identity scales designed for one specific social group, this method allows for comparison of the relative importance of several social identities for perceived political similarities, reducing risks of social desirability bias and confounding group membership and policy preferences with social identity.
+
+Using this novel methodology allows me to show the substantive role ethnicity plays in the perception of political commonalities for British citizens. Additionally, there is some evidence that the relative importance of ethnicity is itself associated with electoral behaviour, with Conservative and Leave voters significantly more sensitive to this category. The fact that this attribute is the most salient one for political commonalities may suggest that this social identity has acquired ``political content'', and may reflect the emergence of a political identity, as defined by Huddy (2013). Because both the respondents and profiles presented to them are representative of Great Britain, the importance of ethnicity is mainly pushed forth by white respondents. These findings complement the emerging literature showing the political influence of ethnicity among majority white citizens in established democracies (e.g. Abrajano, Elmendorf, and Quinn 2015; Nandi and Platt 2020; Xu, Farver, and Pauker 2015). Additionally, the employed methodology allows a more nuanced interpretation of previous evidence that age and education have become relevant predictors for voting behaviour (Sloam and Henn 2019). Specifically, I find little evidence that they loom large in citizens' perceptions of political commonality. This might suggest that the correlation between these demographics and voting behaviour is more related to policy preferences, rather than new politicized social identities.
+
+The evidence I present appears to be in line with the opinion-based identity groups argument, as has been proposed by Hobolt, Leeper, and Tilley (2020), in which the EU referendum and the debates it sparked have brought about the emergence of new political identities. Ethnic social identity might not be a new phenomenon, but its organization around Brexit and the party divide suggests a relevant politicization of this social identity versus others. One question for future research is how much of the relevance of ethnicity in sections of the population comes from in-group preference versus out-group demarcation. In any case, the findings of this study imply important challenges to the way parties translate these social tensions and the need to employ new measurement strategies to disentangle the importance of politicized social identities.
+
+\hypertarget{supplementary-material}{%
+\section{Supplementary Material}\label{supplementary-material}}
+
+Online appendix is available at {[}reference{]}
+
+\hypertarget{data-availability-statement}{%
+\section{Data Availability Statement}\label{data-availability-statement}}
+
+Replication data for this paper can be found at \url{https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/54AQPW}
+
+\hypertarget{acknowledgements}{%
+\section{Acknowledgements}\label{acknowledgements}}
+
+The author would like to thank Benjamin Lauderdale, Jouni Kuha, and Sara Hobolt for very helpful comments on earlier versions of this article
+
+\hypertarget{financial-support}{%
+\section{Financial Support}\label{financial-support}}
+
+None
+
+\hypertarget{competing-interests}{%
+\section{Competing Interests}\label{competing-interests}}
+
+None
+
+\hypertarget{references}{%
+\section*{References}\label{references}}
+\addcontentsline{toc}{section}{References}
+
+\hypertarget{refs}{}
+\begin{CSLReferences}{1}{0}
+\leavevmode\vadjust pre{\hypertarget{ref-abrajano2015using}{}}%
+Abrajano, Marisa, Christofer S Elmendorf, and Kevin M Quinn. 2015. \emph{Using Experiments to Estimate Racially Polarized Voting}. {UC Davis Legal Studies Research Paper 419}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-alford1967class}{}}%
+Alford, Robert R. 1967. {``Class Voting in the {Anglo-American} Political Systems.''} \emph{Party Systems and Voter Alignments: Cross-National Perspectives}, 67--93.
+
+\leavevmode\vadjust pre{\hypertarget{ref-bansak2020conjoint}{}}%
+Bansak, Kirk, Jens Hainmueller, Daniel J Hopkins, Teppei Yamamoto, JN Druckman, and DP Green. 2020. {``Conjoint Survey Experiments.''} In \emph{Advances in {Experimental Political Science}}. {Cambridge University Press}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-butler1969stokes}{}}%
+Butler, David, and Donald Stokes. 1969. \emph{Stokes. {Political Change} in {Britain}: {Forces Shaping Electoral Choice}}. {London: Macmillan}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-butler1971political}{}}%
+Butler, David, and Donald E Stokes. 1971. \emph{Political {Change} in {Britain}: {Forces Shaping Electoral Change}}. {Penguin}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-campbell1960american}{}}%
+Campbell, Angus, Philip E Converse, Warren E Miller, and Donald E Stokes. 1960. \emph{The American Voter}. {University of Chicago Press}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-delacuesta2019improving}{}}%
+De la Cuesta, Brandon, Naoki Egami, and Kosuke Imai. 2019. {``Improving the {External Validity} of {Conjoint Analysis}: {The Essential Role} of {Profile Distribution}.''} Working Paper. \{\{Available\}\} at: \{\{https://imai.fas.harvard.edu/research/files/conjoint.pdf\}\}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-egan2020identity}{}}%
+Egan, Patrick J. 2020. {``Identity as Dependent Variable: {How Americans} Shift Their Identities to Align with Their Politics.''} \emph{American Journal of Political Science} 64 (3): 699--716.
+
+\leavevmode\vadjust pre{\hypertarget{ref-evans2016social}{}}%
+Evans, Geoffrey, and Jonathan Mellon. 2016. {``Social Class: {Identity}, Awareness and Political Attitudes: {Why} Are We Still Working Class?''} \emph{British Social Attitudes} 33.
+
+\leavevmode\vadjust pre{\hypertarget{ref-evans2017new}{}}%
+Evans, Geoffrey, and James Tilley. 2017. \emph{The New Politics of Class: {The} Political Exclusion of the {British} Working Class}. {Oxford University Press}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-ford2020changing}{}}%
+Ford, Robert, and Will Jennings. 2020. {``The Changing Cleavage Politics of {Western Europe}.''} \emph{Annual Review of Political Science} 23: 295--314.
+
+\leavevmode\vadjust pre{\hypertarget{ref-heath2015policy}{}}%
+Heath, Oliver. 2015. {``Policy Representation, Social Representation and Class Voting in {Britain}.''} \emph{British Journal of Political Science} 45 (1): 173--93.
+
+\leavevmode\vadjust pre{\hypertarget{ref-hobolt2020divided}{}}%
+Hobolt, Sara B, Thomas J Leeper, and James Tilley. 2020. {``Divided by the Vote: {Affective} Polarization in the Wake of the {Brexit} Referendum.''} \emph{British Journal of Political Science}, 1--18.
+
+\leavevmode\vadjust pre{\hypertarget{ref-hogg1995tale}{}}%
+Hogg, Michael A, Deborah J Terry, and Katherine M White. 1995. {``A Tale of Two Theories: {A} Critical Comparison of Identity Theory with Social Identity Theory.''} \emph{Social Psychology Quarterly}, 255--69.
+
+\leavevmode\vadjust pre{\hypertarget{ref-houtman2009farewell}{}}%
+Houtman, Dick, Peter Achterberg, and Anton Derks. 2009. \emph{Farewell to the {Leftist Working Class}}. {Transaction Publishers}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-huddy2001social}{}}%
+Huddy, Leonie. 2001. {``From Social to Political Identity: {A} Critical Examination of Social Identity Theory.''} \emph{Political Psychology} 22 (1): 127--56.
+
+\leavevmode\vadjust pre{\hypertarget{ref-huddy2013group}{}}%
+---------. 2013. {``From Group Identity to Political Cohesion and Commitment.''} In \emph{The {Oxford} Handbook of Political Psychology}, edited by David O Sears, Jack S Levy, and Leonie Huddy, 737--73. {Oxford University Press}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-jansen2013classa}{}}%
+Jansen, Giedo, Geoffrey Evans, and Nan Dirk de Graaf. 2013. {``Class Voting and {Left}\textendash{{Right}} Party Positions: {A} Comparative Study of 15 {Western} Democracies, 1960\textendash 2005.''} \emph{Social Science Research} 42 (2): 376--400. \url{https://doi.org/10.1016/j.ssresearch.2012.09.007}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-maggini2016young}{}}%
+Maggini, Nicola. 2016. \emph{Young People's Voting Behaviour in {Europe}: {A} Comparative Perspective}. {Springer}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-marks2017dealignment}{}}%
+Marks, Gary, David Attewell, Jan Rovny, and Liesbet Hooghe. 2017. {``Dealignment Meets Cleavage Theory.''} In \emph{American Political Science Association Meeting, San Francisco, {CA}}. Vol. 30.
+
+\leavevmode\vadjust pre{\hypertarget{ref-mason2015disrespectfully}{}}%
+Mason, Lilliana. 2015. {``{`{I} Disrespectfully Agree'}: {The} Differential Effects of Partisan Sorting on Social and Issue Polarization.''} \emph{American Journal of Political Science} 59 (1): 128--45.
+
+\leavevmode\vadjust pre{\hypertarget{ref-mason2018uncivil}{}}%
+---------. 2018. \emph{Uncivil Agreement: {How} Politics Became Our Identity}. {University of Chicago Press}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-nandi2020relationship}{}}%
+Nandi, Alita, and Lucinda Platt. 2020. {``The Relationship Between Political and Ethnic Identity Among {UK} Ethnic Minority and Majority Populations.''} \emph{Journal of Ethnic and Migration Studies} 46 (5): 957--79.
+
+\leavevmode\vadjust pre{\hypertarget{ref-phinney1992multigroup}{}}%
+Phinney, Jean S. 1992. {``The Multigroup Ethnic Identity Measure: {A} New Scale for Use with Diverse Groups.''} \emph{Journal of Adolescent Research} 7 (2): 156--76.
+
+\leavevmode\vadjust pre{\hypertarget{ref-sloam2019youthquake}{}}%
+Sloam, James, and Matt Henn. 2019. {``Youthquake: {Young People} and the 2017 {General Election}.''} In \emph{Youthquake 2017}, 91--115. {Springer}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-sobolewska2020brexitland}{}}%
+Sobolewska, Maria, and Robert Ford. 2020. \emph{Brexitland: {Identity}, Diversity and the Reshaping of British Politics}. {Cambridge University Press}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-stubager2010development}{}}%
+Stubager, Rune. 2010. {``The Development of the Education Cleavage: {Denmark} as a Critical Case.''} \emph{West European Politics} 33 (3): 505--33.
+
+\leavevmode\vadjust pre{\hypertarget{ref-tajfel1974social}{}}%
+Tajfel, Henri. 1974. {``Social Identity and Intergroup Behaviour.''} \emph{Information (International Social Science Council)} 13 (2): 65--93.
+
+\leavevmode\vadjust pre{\hypertarget{ref-tajfel1979integrative}{}}%
+Tajfel, Henri, John C Turner, William G Austin, and Stephen Worchel. 1979. {``An Integrative Theory of Intergroup Conflict.''} \emph{Organizational Identity: A Reader} 56: 65.
+
+\leavevmode\vadjust pre{\hypertarget{ref-turner1987rediscovering}{}}%
+Turner, John C, Michael A Hogg, Penelope J Oakes, Stephen D Reicher, and Margaret S Wetherell. 1987. \emph{Rediscovering the Social Group: {A} Self-Categorization Theory.} {Basil Blackwell}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-wong2010boundaries}{}}%
+Wong, Cara J. 2010. \emph{Boundaries of Obligation in {American} Politics: {Geographic}, National, and Racial Communities}. {Cambridge University Press}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-xu2015ethnic}{}}%
+Xu, Yiyuan, Jo Ann M Farver, and Kristin Pauker. 2015. {``Ethnic Identity and Self-Esteem Among {Asian} and {European Americans}: {When} a Minority Is the Majority and the Majority Is a Minority.''} \emph{European Journal of Social Psychology} 45 (1): 62--76.
+
+\leavevmode\vadjust pre{\hypertarget{ref-zick2008ethnic}{}}%
+Zick, Andreas, Thomas F Pettigrew, and Ulrich Wagner. 2008. {``Ethnic Prejudice and Discrimination in Europe.''} \emph{Journal of Social Issues} 64 (2): 233--51.
+
+\end{CSLReferences}
+
+\newpage
+\singlespacing 
+\end{document}

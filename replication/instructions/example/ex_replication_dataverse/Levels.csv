@@ -1,0 +1,45 @@
+﻿Social Identity,Category
+Gender,Male
+,Female
+Ethnicity,He/She is White
+,He/She is ethnically mixed
+,He/She is Asian/Asian British
+,He/She is Black
+,The person's ethnicity is unknown
+Age,[X] years old
+Religion,Describes himself/herself as having no religion
+,Describes his/her religion as Christian (no denomination)
+,Describes his/her religion as Roman Catholic
+,Describes his/her religion as Church of England/Anglican
+,Describes his/her religion as Presbyterian/Church of Scotland
+,Describes his/her religion as Methodist
+,Describes his/her religion as Hindu
+,Describes his/her religion as Islam
+,The person's religion is unknown
+Region,Lives in the East Midlands
+,Lives in the East of England
+,Lives in London
+,Lives in North East
+,Lives in North West
+,Lives in Scotland
+,Lives in South East
+,Lives in South West
+,Lives in Wales
+,Lives in West Midlands
+,Lives in Yorkshire & Humber
+Home status,Owns the home where he/she lives
+,Rents the home where he/she lives
+Education,Does not have a university degree
+,Has a university degree
+Annual household income,"Household Income is less than £5,199 per year"
+,"Household Income is between £5,200 and £15,599 per year"
+,"Household income is between £15,600 and £25,999 per year"
+,"Household income is between £26,000 and £36,399 per year"
+,"Household income is between £36,400 and £44,999 per year"
+,"Household income is between £45,000 and £59,999 per year"
+,"Household income is between £60,000 and £99,999 per year"
+,"Household income is greater than £100,000 per year"
+Subjective class,Describes himself/herself as Middle class
+,Describes himself/herself as Working class
+Subjective family class,Describes his/her family when growing up as Middle class
+,Describes his/her family when growing up as Working class
