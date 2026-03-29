@@ -1,1 +1,2 @@
 load("/Users/ines/Downloads/dataverse_files/cps_data.RDS")
+load("/Users/ines/Desktop/0_Drive/School/0_Lecture/2학기/Stats II/StatsII_2026/replication/my_replication project/data_SK/cps_data.RDS")

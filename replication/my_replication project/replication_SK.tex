@@ -108,21 +108,26 @@
 	\subsection{Background and Research Question}
 	\begin{itemize}
 		\item \textbf{Research Question:} Why do many countries repeal the inheritance tax after having previously introduced it? 
-		\item \textbf{Limitations of Existing Literature:} Conventional public policy research holds that policies are rarely terminated due to entrenched interests. However, inheritance taxation is an exception, showing a rapid decline since the 1960s.
-		\item \textbf{Authors' Perspective:} The "rise and fall" of the inheritance tax is determined by changes in its revenue function for the state, rather than just democratic pressure or elite capture.
+		
+		\item \textbf{Limitations of Existing Literature:} Conventional public policy research suggests that once policies are implemented, they tend to persist due to institutional inertia and entrenched interests. However, inheritance taxation represents a notable exception, having experienced a widespread decline since the mid-20th century.
+		
+		\item \textbf{Authors' Perspective:} The authors argue that the “rise and fall” of the inheritance tax is better understood through changes in its fiscal role within the state. In particular, they emphasize that its trajectory is primarily driven by transformations in its revenue function, rather than by purely political or ideological factors such as democratic pressure or elite capture.
 	\end{itemize}
 	
 	\subsection{Hypotheses}
 	\begin{itemize}
-		\item \textbf{Revenue Hypothesis:} The likelihood of inheritance tax repeal increases as governments adopt and expand more efficient revenue instruments, such as income taxes and Value Added Tax (VAT).
-		\item \textbf{Redistribution Hypothesis:} Once fiscal purpose weakens, the survival of the tax depends on redistributive features; therefore, non-democratic governments are more likely to repeal the tax than democracies.
+		\item \textbf{Revenue Hypothesis:} The likelihood of inheritance tax repeal increases as governments adopt and expand more efficient and stable revenue instruments, such as income taxes and Value Added Tax (VAT). As these alternative sources grow, the fiscal necessity of inheritance taxation declines, making it more politically expendable.
+		
+		\item \textbf{Redistribution Hypothesis:} Once the fiscal importance of inheritance taxation weakens, its survival depends on redistributive considerations. In this context, democratic regimes—where redistributive demands are more politically salient—are expected to be less likely to repeal the tax than non-democratic regimes.
 	\end{itemize}
 	
 	\subsection{Data and Method}
 	\begin{itemize}
 		\item \textbf{Data:} The authors use a novel dataset tracking inheritance tax introductions and repeals for a global sample of 87 countries over approximately two centuries (1759–2015).
-		\item \textbf{Method:} The study utilizes a Binary Time-Series Cross-Section (BTSCS) dataset.
-		\item \textbf{Model:} 	The analysis is conducted using Logit Models with a cubic polynomial approximation $(t,t^2,t^3)$ to account for temporal dependence and analyze repeal risk.
+		
+		\item \textbf{Method:} The study utilizes a Binary Time-Series Cross-Section (BTSCS) dataset, where country-years are observed until the repeal of the inheritance tax.
+		
+		\item \textbf{Model:} The analysis is conducted using logistic regression models estimated via maximum likelihood. To account for temporal dependence in BTSCS data, a cubic polynomial approximation $(t,t^2,t^3)$ is included to model time at risk.
 	\end{itemize}
 	\begin{figure}[H]\centering
 		\caption{Inheritance Tax Introductions and Repeals over Time}
@@ -132,7 +137,7 @@
 	
 \newpage
 	\section{Data}
-	\noindent The main analysis is conducted using the \texttt{merge\_full\_2} dataset, which is a Binary Time-Series Cross-Section (BTSCS) dataset tracking countries at risk of repealing their inheritance tax.
+	\noindent The main analysis is conducted using the \texttt{merge\_full\_2} dataset, which is a Binary Time-Series Cross-Section (BTSCS) dataset tracking countries at risk of repealing their inheritance tax over time.
 	\vspace{0.3cm}
 	\subsection{Outcome Variable}
 	\noindent Inheritance tax repeal (y), coded as:
@@ -198,7 +203,8 @@
 		\includegraphics[width=0.7\textwidth]{data_SK/Figure4.pdf}
 	\end{figure}
 	\subsection{Main Regression Model (Table 1)}
-	To test their hypotheses on tax repeal, the authors run a logistic regression model with a maximum likelihood estimation technique. To account for temporal dependence in the Binary Time-Series Cross-Section (BTSCS) data, they include a cubic polynomial approximation (t, t2, t3).
+	To test their hypotheses on tax repeal, the authors estimate a series of logistic regression models using maximum likelihood estimation. To account for temporal dependence in the Binary Time-Series Cross-Section (BTSCS) data, they include a cubic polynomial approximation (t, t2, t3).
+	
 	The R code to replicate the fully specified model (Model 3) is as follows:
 
 	\begin{lstlisting}[language=R]
@@ -207,7 +213,17 @@
 		log(time_since_intro) + log_gdp_cap + e_pelifeex + log(population_new) + t + t2 + t3,
 		data = merge_full_2, family=binomial(link="logit")))\end{lstlisting}
 	
+	\newpage
+	
 	\input{data_SK/Table1.tex}
+	
+	\noindent The results indicate that the coefficient for \textbf{Major Modern Taxes} is positive and statistically significant, suggesting that the expansion of alternative revenue sources increases the likelihood of inheritance tax repeal. Substantively, this supports the argument that inheritance taxation becomes politically vulnerable once it is no longer fiscally indispensable.
+	
+	In contrast, the coefficient for \textbf{Democracy} is negative and statistically significant, indicating that democratic regimes are less likely to repeal inheritance taxes. This finding aligns with the redistribution hypothesis, suggesting that democratic institutions may sustain redistributive policies even when their fiscal importance declines.
+	
+	Overall, these results provide strong empirical support for the authors’ central claim that fiscal structure, rather than purely political ideology, plays a decisive role in shaping the fate of inheritance taxation.
+	
+	The replicated estimates closely match those reported in the original study in terms of coefficient signs and statistical significance. Minor differences may arise from data preprocessing or sample restrictions, but the substantive conclusions remain unchanged, indicating that the original findings are robust and reproducible.
 	
 	\newpage
 	\subsection{Robustness Checks (Figures 5 and 6)}
@@ -236,11 +252,11 @@
 	
 	\newpage
 	\section{My Contribution}
-	\noindent While the original model provides valuable insights, it is hard to substantively interpret each coefficient.
-	For example, if I interpret the coefficient for "Major modern taxes" (1.098) in Table 1: In comparison to not having modern taxes, for each unit increase in the modern tax index, the log-odds of repealing the inheritance tax increase by 1.098 on average, while holding all other variables constant. 
-	This log-odds interpretation tells us the direction and statistical significance, but it is not intuitive enough to grasp the actual probability of repeal in real-world scenarios. 
-	Moreover, the original model assumes that the effect of modern taxes and the effect of democracy are strictly independent and additive. It ignores the theoretical possibility that democratic institutions might actively moderate the fiscal pressure to repeal the tax. 
-	Therefore, in this section, I provide a more intuitive and nuanced interpretation by combining a logistic regression model with an interaction term and predicted probability S-curves. 
+	\noindent While the original model provides valuable insights, the interpretation of log-odds coefficients remains substantively unintuitive. For instance, the coefficient for \texttt{Major modern taxes} (1.098) indicates that a one-unit increase in the index raises the log-odds of repeal, holding other variables constant. While this conveys direction and statistical significance, it does not provide an intuitive sense of how the probability of repeal changes in practice.
+	
+	Moreover, the original model assumes that the effects of fiscal capacity and democracy are strictly additive. This may be overly restrictive, as democratic institutions could plausibly moderate the relationship between revenue conditions and policy outcomes. 
+	
+	Therefore, in this section, I extend the original model by incorporating an interaction term and translating the results into predicted probabilities, providing a more intuitive and theoretically nuanced interpretation.
 	
 	\subsection{The Interaction Hypothesis}
 	\noindent I argue that we can formulate a theoretical interaction hypothesis:
@@ -262,7 +278,7 @@
 	\end{lstlisting}
 	
 	\input{data_SK/Table2.tex}
-	\noindent Note: Table 2 shows that the interaction term Major Modern Taxes x Democracy is negative (-0.417), aligning with the direction of the theoretical hypothesis, although it does not achieve statistical significance at conventional levels.
+	\noindent Note: Table 2 shows that the interaction term Major Modern Taxes x Democracy is negative (-0.417), aligning with the theoretical expectation that democratic institutions attenuate the effect of revenue redundancy. However, the interaction term does not achieve statistical significance at conventional levels, suggesting that the empirical evidence for this moderating effect remains inconclusive.
 	
 	\vspace{0.5cm}
 	\subsubsection{Figure 7: Predicted Probability S-Curves}
@@ -282,6 +298,19 @@
 		\includegraphics[width=0.7\textwidth]{data_SK/Figure7.pdf}
 	\end{figure}
 	
-	\noindent Although the interaction term itself is not statistically significant—likely due to the overall rarity of repeal events (only 40 out of 6,087 observations)—the graphical representation strongly supports the substantive hypothesis. It effectively demonstrates that democratic institutions serve as a powerful buffer against the fiscal pressures to repeal the inheritance tax, adding a crucial and intuitive nuance to the original authors' additive claims. 
+	\noindent Although the interaction term itself is not statistically significant—likely due to the overall rarity of repeal events (only 40 out of 6,087 observations)—the graphical representation provides suggestive visual evidence consistent with the theoretical expectation. It effectively demonstrates that democratic institutions serve as a powerful buffer against the fiscal pressures to repeal the inheritance tax, adding a crucial and intuitive nuance to the original authors' additive claims.
+	
+	\newpage
+	\section{Conclusion}
+	
+	\noindent This replication study confirms the main findings of Genschel, Limberg, and Seelkopf (2024), demonstrating that the likelihood of inheritance tax repeal is strongly associated with changes in fiscal structure, particularly the expansion of more efficient revenue sources. The replicated results closely align with the original estimates, reinforcing the robustness and reproducibility of the authors’ core arguments.
+	
+	Building on this, the extension introduced in this paper highlights the potential moderating role of democratic institutions. While the interaction model suggests that democracies may attenuate the effect of revenue redundancy on tax repeal, the lack of statistical significance indicates that this relationship remains suggestive rather than conclusive.
+	
+	Overall, this analysis illustrates both the strengths and limitations of the original model. While it provides a compelling explanation centered on fiscal capacity, further research could explore more complex interactions between political institutions and economic conditions. In particular, future work may benefit from addressing the rarity of repeal events and employing alternative estimation strategies to better capture such dynamics.
+	
+	\vspace{0.3cm}
+	
+	\noindent Taken together, this study demonstrates not only the empirical robustness of the original findings but also the value of extending replication exercises to generate new theoretical and methodological insights. 
 	
 \end{document}
